@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TELEMARKETER
+  CUSTOMERSERVICE
+  COLLECTOR
+  VERIFICATOR
+  USER
+  ACCOUNTANT
+}
+
+model User {
+  id                       String              @id @unique @default(uuid())
+  created_at               DateTime            @default(now())
+  updated_at               DateTime            @updatedAt
+  first_name               String
+  middle_name              String?
+  last_name                String
+  dob                      DateTime
+  gender                   String
+  nationality              String
+  bvn                      String              @unique
+  education                String
+  marital_status           String
+  number_of_children       String
+  current_address          String
+  email                    String              @unique
+  phone_number             String              @unique
+  lga_of_origin            String
+  state_of_origin          String
+  city                     String
+  state_of_residence       String
+  password                 String
+  level                    Int
+  loan_name                String?
+  max_amount               Int
+  min_amount               Int
+  cycle                    Int                 @default(0)
+  days_tenure              Int                 @default(0)
+  eligible_to_collect_loan Boolean             @default(false)
+  image                    String?
+  salary_range             String?
+  bvn_data                 BvnData?
+  Loans                    Loans[]
+  BankDetail               BankDetail?
+  EmergencyContact         EmergencyContact[]
+  ColleagueContact         ColleagueContact[]
+  EmploymentDetails        EmploymentDetails[]
+  CardDetail               CardDetail[]
+  Otp                      Otp?
+  Role                     Role                @default(USER)
+}
+
+model Otp {
+  id         String   @id @default(uuid())
+  otp        String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model BvnData {
+  id                  Int      @id @default(autoincrement())
+  bvn                 String   @unique
+  first_name          String
+  last_name           String
+  middle_name         String?
+  gender              String
+  date_of_birth       DateTime
+  phone_number1       String
+  image               String
+  level_of_account    String
+  lga_of_origin       String
+  lga_of_residence    String
+  marital_status      String
+  name_on_card        String
+  nationality         String
+  nin                 String   @unique
+  phone_number2       String?
+  reference           String
+  registration_date   String
+  residential_address String
+  state_of_origin     String
+  state_of_residence  String
+  title               String
+  watch_listed        String
+  user                User     @relation(fields: [userId], references: [id])
+  userId              String   @unique
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+}
+
+model BankDetail {
+  id             String @id @default(uuid())
+  bank_name      String
+  account_number String
+  account_name   String
+  user           User   @relation(fields: [userId], references: [id])
+  userId         String @unique
+}
+
+model CardDetail {
+  id         String @id @default(uuid())
+  email      String
+  card_no    String
+  cart_token String
+  card_name  String
+  user       User   @relation(fields: [userId], references: [id])
+  userId     String
+}
+
+model EmergencyContact {
+  id           String @id @unique @default(uuid())
+  relationship String
+  name         String
+  phone_number String
+  user         User   @relation(fields: [userId], references: [id])
+  userId       String
+}
+
+model ColleagueContact {
+  id           String @id @unique @default(uuid())
+  name         String
+  phone_number String
+  user         User   @relation(fields: [userId], references: [id])
+  userId       String
+}
+
+model EmploymentDetails {
+  id                 String   @id @unique @default(uuid())
+  company_name       String
+  company_address    String
+  role               String
+  salary_range       String
+  employment_status  String
+  date_of_employment DateTime
+  user               User     @relation(fields: [userId], references: [id])
+  userId             String
+}
+
+model Loans {
+  id                  String    @id @unique @default(uuid())
+  user                User      @relation(fields: [userId], references: [id])
+  userId              String
+  amount              Float
+  duration            Int
+  loan_request_status String
+  amount_requested    Float
+  amount_disbursed    Float
+  amount_owed         Float
+  amount_paid         Float
+  loan_date           DateTime
+  loan_due_date       DateTime
+  paid_at             DateTime?
+  paid                Boolean   @default(false)
+  repayment_frequency String?
+  status              String
+  purpose             String
+  interest            Interest  @relation(fields: [interestId], references: [id])
+  interestId          String
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+}
+
+model Interest {
+  id             String   @id @unique @default(uuid())
+  name           String
+  vat            Float
+  service_charge Float
+  interest_rate  Float
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  Loans          Loans[]
+}
