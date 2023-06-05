@@ -1,0 +1,51 @@
+export const initPayment = {
+  status: true,
+  message: 'Authorization URL created',
+  data: {
+    authorization_url: 'https://checkout.paystack.com/0peioxfhpn',
+    access_code: '0peioxfhpn',
+    reference: '7PVGX8MEk85tgeEpVDtD',
+  },
+};
+
+export const verifyPayment = {
+  id: 4350754,
+  tx_ref: '46bb68b6-1293-40e7-bae7-992879b14762',
+  flw_ref: 'FLW-MOCK-4468b3cb90904cb1993f5f4feaafedd1',
+  device_fingerprint: '788921400a9d7d2a0a73e8db6e899f55',
+  amount: 100,
+  currency: 'NGN',
+  charged_amount: 100,
+  app_fee: 1.4,
+  merchant_fee: 0,
+  processor_response: 'Approved. Successful',
+  auth_model: 'VBVSECURECODE',
+  ip: '52.209.154.143',
+  narration: 'CARD Transaction ',
+  status: 'successful',
+  payment_type: 'card',
+  created_at: '2023-05-25T23:25:42.000Z',
+  account_id: 1915940,
+  card: {
+    first_6digits: '418742',
+    last_4digits: '4246',
+    issuer: 'ACCESS BANK PLC DEBIT CLASSIC',
+    country: 'NIGERIA NG',
+    type: 'VISA',
+    token: 'flw-t1nf-c4aeb9c6d040d93328988857de78327e-m03k',
+    expiry: '09/32',
+  },
+  meta: {
+    __CheckoutInitAddress: 'https://ravemodal-dev.herokuapp.com/v3/hosted/pay',
+    user_id: 'c041423b-fdf9-4f8a-91c6-3f6f9b67f676',
+    package_id: 'a05c6c5b-db0b-40b8-a400-d28432b8f3ad',
+  },
+  amount_settled: 98.6,
+  customer: {
+    id: 2082364,
+    name: 'Anonymous customer',
+    phone_number: 'N/A',
+    email: 'raheemolalekanusman74@gmail.com',
+    created_at: '2023-05-25T23:25:42.000Z',
+  },
+};
