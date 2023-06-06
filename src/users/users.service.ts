@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create_user.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { LoginUserDto } from './dto/login_user.dto';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -37,6 +38,7 @@ export class UsersService {
           level: 1,
           max_amount: 7000,
           min_amount: 1000,
+          role: Role.USER,
           bvn_data: {
             create: {
               ...data.bvn_data,
@@ -45,7 +47,7 @@ export class UsersService {
         },
       });
 
-      const token = this.signToken(user.id, user.email, user.Role);
+      const token = this.signToken(user.id, user.email, user.role);
 
       return {
         status: true,
@@ -86,7 +88,7 @@ export class UsersService {
         });
       }
 
-      const token = this.signToken(user.id, user.email, user.Role);
+      const token = this.signToken(user.id, user.email, user.role);
 
       return {
         status: true,
@@ -102,19 +104,56 @@ export class UsersService {
     }
   }
 
-  async sedOtp(phone_number: string) {}
+  async sedOtp(phone_number: string) {
+    try {
+    } catch (error) {}
+  }
 
-  async verifyOtp(phone_number: string, otp: string) {}
+  async verifyOtp(phone_number: string, otp: string) {
+    try {
+    } catch (error) {}
+  }
 
-  async changePassword(userId: string, password: string) {}
+  async changePassword(userId: string, password: string) {
+    try {
+    } catch (error) {}
+  }
 
-  async verifyBvn(bvn: string) {}
+  async verifyBvn(bvn: string) {
+    try {
+    } catch (error) {}
+  }
 
-  async verifyAccountNumber(account_number: string, bank_code: string) {}
+  async verifyAccountNumber(account_number: string, bank_code: string) {
+    try {
+    } catch (error) {}
+  }
 
-  async createBankAccount(userId: string, data: any) {}
+  async createBankAccount(userId: string, data: any) {
+    try {
+    } catch (error) {}
+  }
 
-  async getBankAccounts(userId: string) {}
+  async getBankAccounts(userId: string) {
+    try {
+      const bankAccounts = await this.prisma.bankDetail.findMany({
+        where: {
+          id: userId,
+        },
+      });
+
+      return {
+        status: true,
+        data: bankAccounts,
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        message: `${error}`,
+        status: false,
+        data: {},
+      });
+    }
+  }
 
   async getProlfile(userId: string) {
     try {
@@ -150,13 +189,6 @@ export class UsersService {
     const payload = { userId, email, role };
 
     const secret = process.env.JWT_SECRET || this.config.get('JWT_SECRET');
-
-    if (role === 'admin') {
-      return this.jwt.sign(payload, {
-        expiresIn: '1d',
-        secret: secret,
-      });
-    }
     return this.jwt.sign(payload, { expiresIn: '1d', secret: secret });
   }
 }

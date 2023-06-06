@@ -19,8 +19,8 @@ import { PaymentModule } from './payment/payment.module';
   imports: [
     ScheduleModule.forRoot(),
     AuthModule,
-    UsersModule,
     AdminModule,
+    UsersModule,
     TelemarketingModule,
     VerificationModule,
     CollectionModule,

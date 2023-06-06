@@ -10,14 +10,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
+enum Department {
   TELEMARKETER
   CUSTOMERSERVICE
   COLLECTOR
   VERIFICATOR
-  USER
   ACCOUNTANT
+}
+
+enum Role {
+  ADMIN
+  USER
+  TEAMLEADER
+  TEAMMEMBER
+}
+
+model Admin {
+  id           String   @id @unique @default(uuid())
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  phone_number String   @unique
+  email        String   @unique
+  password     String
+  first_name   String
+  last_name    String
+  role         Role
+}
+
+model Staff {
+  id           String     @id @unique @default(uuid())
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  phone_number String     @unique
+  email        String     @unique
+  password     String
+  first_name   String
+  last_name    String
+  status       String?
+  lock         Boolean    @default(false)
+  department   Department
+  role         Role
 }
 
 model User {
@@ -59,7 +91,7 @@ model User {
   EmploymentDetails        EmploymentDetails[]
   CardDetail               CardDetail[]
   Otp                      Otp?
-  Role                     Role                @default(USER)
+  role                     Role
 }
 
 model Otp {
