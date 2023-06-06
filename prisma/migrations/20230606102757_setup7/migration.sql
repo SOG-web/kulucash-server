@@ -5,11 +5,10 @@
   - You are about to drop the column `name` on the `User` table. All the data in the column will be lost.
   - A unique constraint covering the columns `[id]` on the table `User` will be added. If there are existing duplicate values, this will fail.
   - A unique constraint covering the columns `[bvn]` on the table `User` will be added. If there are existing duplicate values, this will fail.
+  - A unique constraint covering the columns `[phone_number]` on the table `User` will be added. If there are existing duplicate values, this will fail.
   - Added the required column `bvn` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `city` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `current_address` to the `User` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `cycle` to the `User` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `days_tenure` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `dob` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `education` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `first_name` to the `User` table without a default value. This is not possible if the table is not empty.
@@ -24,16 +23,17 @@
   - Added the required column `number_of_children` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `password` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `phone_number` to the `User` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `role` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `state_of_origin` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `state_of_residence` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `updated_at` to the `User` table without a default value. This is not possible if the table is not empty.
 
 */
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'TELEMARKETER', 'CUSTOMERSERVICE', 'COLLECTOR', 'VERIFICATOR', 'USER', 'ACCOUNTANT');
+CREATE TYPE "Department" AS ENUM ('TELEMARKETER', 'CUSTOMERSERVICE', 'COLLECTOR', 'VERIFICATOR', 'ACCOUNTANT');
 
--- DropIndex
-DROP INDEX "User_email_key";
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER', 'TEAMLEADER', 'TEAMMEMBER');
 
 -- AlterTable
 ALTER TABLE "User" DROP CONSTRAINT "User_pkey",
@@ -42,11 +42,11 @@ ADD COLUMN     "bvn" TEXT NOT NULL,
 ADD COLUMN     "city" TEXT NOT NULL,
 ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN     "current_address" TEXT NOT NULL,
-ADD COLUMN     "cycle" INTEGER NOT NULL,
-ADD COLUMN     "days_tenure" INTEGER NOT NULL,
+ADD COLUMN     "cycle" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "days_tenure" INTEGER NOT NULL DEFAULT 0,
 ADD COLUMN     "dob" TIMESTAMP(3) NOT NULL,
 ADD COLUMN     "education" TEXT NOT NULL,
-ADD COLUMN     "eligible_to_collect_loan" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "eligible_to_collect_loan" BOOLEAN NOT NULL DEFAULT false,
 ADD COLUMN     "first_name" TEXT NOT NULL,
 ADD COLUMN     "gender" TEXT NOT NULL,
 ADD COLUMN     "image" TEXT,
@@ -62,6 +62,7 @@ ADD COLUMN     "nationality" TEXT NOT NULL,
 ADD COLUMN     "number_of_children" TEXT NOT NULL,
 ADD COLUMN     "password" TEXT NOT NULL,
 ADD COLUMN     "phone_number" TEXT NOT NULL,
+ADD COLUMN     "role" "Role" NOT NULL,
 ADD COLUMN     "salary_range" TEXT,
 ADD COLUMN     "state_of_origin" TEXT NOT NULL,
 ADD COLUMN     "state_of_residence" TEXT NOT NULL,
@@ -70,6 +71,37 @@ ALTER COLUMN "id" DROP DEFAULT,
 ALTER COLUMN "id" SET DATA TYPE TEXT,
 ADD CONSTRAINT "User_pkey" PRIMARY KEY ("id");
 DROP SEQUENCE "User_id_seq";
+
+-- CreateTable
+CREATE TABLE "Admin" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "phone_number" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "first_name" TEXT NOT NULL,
+    "last_name" TEXT NOT NULL,
+    "role" "Role" NOT NULL,
+
+    CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Worker" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "phone_number" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "first_name" TEXT NOT NULL,
+    "last_name" TEXT NOT NULL,
+    "department" "Department" NOT NULL,
+    "role" "Role" NOT NULL,
+
+    CONSTRAINT "Worker_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Otp" (
@@ -99,7 +131,7 @@ CREATE TABLE "BvnData" (
     "marital_status" TEXT NOT NULL,
     "name_on_card" TEXT NOT NULL,
     "nationality" TEXT NOT NULL,
-    "nin" TEXT,
+    "nin" TEXT NOT NULL,
     "phone_number2" TEXT,
     "reference" TEXT NOT NULL,
     "registration_date" TEXT NOT NULL,
@@ -212,10 +244,31 @@ CREATE TABLE "Interest" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Admin_id_key" ON "Admin"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Admin_phone_number_key" ON "Admin"("phone_number");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Worker_id_key" ON "Worker"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Worker_phone_number_key" ON "Worker"("phone_number");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Worker_email_key" ON "Worker"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Otp_userId_key" ON "Otp"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "BvnData_bvn_key" ON "BvnData"("bvn");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BvnData_nin_key" ON "BvnData"("nin");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "BvnData_userId_key" ON "BvnData"("userId");
@@ -243,6 +296,9 @@ CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_bvn_key" ON "User"("bvn");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_phone_number_key" ON "User"("phone_number");
 
 -- AddForeignKey
 ALTER TABLE "Otp" ADD CONSTRAINT "Otp_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
