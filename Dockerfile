@@ -27,7 +27,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # get the database url from the environment variable
-ARG DATABASE_URL=postgres://rou-postgress:rou-postgress@rou-postgress:5432/kulucash
+ARG DATABASE_URL=postgres://rou-postgress:rou-postgress@130.61.105.134:49191/kulucash
 
 ENV DATABASE_URL=${DATABASE_URL}
 
