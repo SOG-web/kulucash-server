@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  kuluchashserver:
+    image: kuluchashserver
+    container_name: kuluchashserver
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000

@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Role } from '@prisma/client';
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateAdminDto {
   @IsString()
@@ -20,6 +21,10 @@ export class CreateAdminDto {
   @IsString()
   @IsNotEmpty()
   last_name: string;
+
+  @IsString()
+  @IsEnum(Role)
+  role: Role;
 }
 
 export class LoginAdminDto {
