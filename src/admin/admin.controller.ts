@@ -124,4 +124,22 @@ export class AdminController {
   ): Promise<any> {
     return this.adminService.lockManyStaffs(staffs.ids, staffs.lock);
   }
+
+  // unlock many staffs
+  @Post('unlock-staffs2')
+  @ApiOperation({ summary: 'Unlock Staffs' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        ids: ['id1', 'id2'],
+        lock: false,
+      },
+    },
+  })
+  unlockManyStaffs2(
+    @Body() staffs: { ids: string[]; lock: boolean },
+  ): Promise<any> {
+    return this.adminService.lockManyStaffs(staffs.ids, staffs.lock);
+  }
 }
