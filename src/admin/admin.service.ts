@@ -7,6 +7,8 @@ import { Role } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAdminDto, LoginAdminDto } from './dto/admin.dto';
 import { CreateStaffDto, UpdateStaffDto } from './dto/staff.dto';
+import { SmsService } from 'src/sms/sms.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 @Injectable()
 export class AdminService {
@@ -14,6 +16,7 @@ export class AdminService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private readonly config: ConfigService,
+    private smsService: SmsService,
   ) {}
 
   async createAdmin(data: CreateAdminDto) {
@@ -129,7 +132,7 @@ export class AdminService {
         });
       }
 
-      const generatedPassword = '';
+      const generatedPassword = Math.random().toString(36).slice(-8);
 
       const hashedPassword = await argon.hash(generatedPassword);
 
@@ -142,7 +145,10 @@ export class AdminService {
 
       delete staff.password;
 
-      // send email
+      // send sms to staff
+      const message = `Hello ${staff.first_name} ${staff.last_name}, your password is ${generatedPassword}. Please change your password immediately.`;
+
+      await this.smsService.sendSMS({ to: [staff.phone_number], message });
 
       return {
         status: true,
@@ -150,6 +156,14 @@ export class AdminService {
         message: 'Worker Created Successfully',
       };
     } catch (error) {
+      // check if error is not instance of PrismaClientKnownRequestError and delete staff
+      if (!(error instanceof PrismaClientKnownRequestError)) {
+        await this.prisma.staff.delete({
+          where: {
+            phone_number: data.phone_number,
+          },
+        });
+      }
       throw new ForbiddenException({
         status: false,
         message: 'Error Ocurred',

@@ -28,9 +28,11 @@ export class SmsService {
       const data = {
         to,
         message,
-        sender_name: 'SAlert' || 'Sendchamp',
+        sender_name: 'seepspring',
         route: 'dnd',
       };
+
+      //console.log('sms data', data);
 
       const { data: res } = await axios.post(sendSms, data, config);
       //console.log('sms res', res);

@@ -5,7 +5,6 @@ import * as argon from 'argon2';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create_user.dto';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { LoginUserDto } from './dto/login_user.dto';
 import { Role } from '@prisma/client';
 
