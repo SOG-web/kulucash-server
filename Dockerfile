@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:16-slim
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
@@ -16,6 +16,8 @@ RUN npm install --legacy-peer-deps
 
 RUN npm install @babel/core@7.21.0 --legacy-peer-deps
 
+RUN npm install -g @nestjs/cli
+
 WORKDIR /usr/src/app
 
 COPY ./ .
@@ -25,7 +27,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # get the database url from the environment variable
-ARG DATABASE_URL=postgres://postgres:postgrespw@localhost:32768/kulucash
+ARG DATABASE_URL=postgres://rou-postgress:rou-postgress@rou-postgress:5432/kulucash
 
 ENV DATABASE_URL=${DATABASE_URL}
 
