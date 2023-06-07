@@ -25,6 +25,7 @@ async function bootstrap() {
     .addServer('http://130.61.105.134:3000')
     .addServer('http://localhost:3000')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
