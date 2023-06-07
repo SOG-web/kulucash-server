@@ -22,7 +22,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('kulucash')
     .addBearerAuth()
-    // .addServer('https://api.fasta-smata.com')
+    .addServer('http://130.61.105.134:3000')
     .addServer('http://localhost:3000')
     .build();
   const document = SwaggerModule.createDocument(app, config);
