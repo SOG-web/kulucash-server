@@ -5,6 +5,7 @@ services:
     image: kuluchashserver
     container_name: kuluchashserver
     restart: always
+    pull_policy: build
     build:
       context: .
       dockerfile: ./Dockerfile
