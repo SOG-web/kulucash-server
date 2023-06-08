@@ -123,6 +123,9 @@ model BvnData {
   date_of_birth       DateTime
   phone_number1       String
   image               String
+  email               String
+  enrollment_bank     String
+  enrollment_branch   String
   level_of_account    String
   lga_of_origin       String
   lga_of_residence    String
