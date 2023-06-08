@@ -14,6 +14,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
 import { SmsModule } from './sms/sms.module';
 import { PaymentModule } from './payment/payment.module';
+import { PaystackModule } from './paystack/paystack.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { PaymentModule } from './payment/payment.module';
     }),
     SmsModule,
     PaymentModule,
+    PaystackModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
