@@ -31,3 +31,5 @@ export const verifyObj = {
   },
   message: 'BVN Verified',
 };
+
+export type VerifyBvnObj = typeof verifyObj;

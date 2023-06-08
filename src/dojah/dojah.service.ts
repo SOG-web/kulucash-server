@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { type } from 'os';
 import { BVNResponse } from './objects/bnv';
+import { BankResponse } from './objects/banks';
 
 @Injectable()
 export class DojahService {
@@ -16,9 +17,19 @@ export class DojahService {
     Appid: `${this.config.get('DOJAH_APP_ID') || process.env.DOJAH_APP_ID}`,
   };
 
-  async getBanks() {}
-
-  async verifyAccountNumber(accountNumber: string, bankCode: string) {}
+  async getBanks(): Promise<BankResponse> {
+    try {
+      const { data } = await axios.get(
+        `${
+          this.config.get('DOJAH_ENDPOINT') || process.env.DOJAH_ENDPOINT
+        }/api/v1/general/banks`,
+        {
+          headers: this.headers,
+        },
+      );
+      return data;
+    } catch (error) {}
+  }
 
   async checkBvn(bvn: string): Promise<BVNResponse> {
     try {
