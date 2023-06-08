@@ -142,4 +142,10 @@ export class AdminController {
   ): Promise<any> {
     return this.adminService.lockManyStaffs(staffs.ids, staffs.lock);
   }
+
+  @Get('dashboard')
+  @ApiOperation({ summary: 'Get Dashboard Details' })
+  getDashboard(): Promise<any> {
+    return this.adminService.getDashboard();
+  }
 }

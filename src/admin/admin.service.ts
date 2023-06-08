@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from '@prisma/client';
+import { Department, LoanStatus, Role } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAdminDto, LoginAdminDto } from './dto/admin.dto';
@@ -293,6 +293,60 @@ export class AdminService {
         status: true,
         data: error,
         message: 'Error Occured',
+      });
+    }
+  }
+
+  async getDashboard(): Promise<any> {
+    try {
+      const loans = await this.prisma.loans.count();
+
+      const pendingLoans = await this.prisma.loans.count({
+        where: {
+          status: LoanStatus.PENDING,
+        },
+      });
+
+      const disbursedLoans = await this.prisma.loans.findMany({
+        where: {
+          status: LoanStatus.DISBURSED,
+        },
+      });
+
+      const totalDisbursedLoans = disbursedLoans.reduce(
+        (acc, curr) => acc + curr.amount,
+        0,
+      );
+
+      const recentRepayments = await this.prisma.loans.findMany({
+        where: {
+          status: {
+            in: [LoanStatus.PAID, LoanStatus.PARTIALLY_PAID],
+          },
+        },
+        take: 10,
+        orderBy: {
+          created_at: 'desc',
+        },
+      });
+
+      // get wallet balance from paystack
+
+      return {
+        status: true,
+        data: {
+          totalLoanApplications: loans,
+          pendingLoanApplications: pendingLoans,
+          totalDisbursedLoans,
+          walletBalance: 500000,
+          recentRepayments,
+        },
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: false,
+        message: 'Error Ocurred',
+        data: error,
       });
     }
   }
