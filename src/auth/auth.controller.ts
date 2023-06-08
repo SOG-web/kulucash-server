@@ -1,5 +1,18 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { AdminService } from 'src/admin/admin.service';
 import { CreateAdminDto, LoginAdminDto } from 'src/admin/dto/admin.dto';
 import { createAdminObj } from 'src/admin/objects/admin';
@@ -8,12 +21,19 @@ import { LoginUserDto } from 'src/users/dto/login_user.dto';
 import { verifyObj } from 'src/users/objects/bvn';
 import { createUserObj } from 'src/users/objects/user';
 import { UsersService } from 'src/users/users.service';
+import { AuthService } from './auth.service';
+import { Request } from 'express';
+import { Role } from '@prisma/client';
+import { Roles } from './decorators/roles.decorator';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { RolesGuard } from './guard/role.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private adminService: AdminService,
     private usersService: UsersService,
+    private authService: AuthService,
   ) {}
 
   @Post('create-admin')
@@ -34,13 +54,72 @@ export class AuthController {
     required: true,
     schema: {
       example: {
-        phone: 'phone_number',
+        phone_number: 'phone_number',
         password: 'password',
       },
     },
   })
   loginAdmin(@Body() login: LoginAdminDto): Promise<any> {
     return this.adminService.loginAdmin(login);
+  }
+
+  @Post('login-staff')
+  @ApiOperation({ summary: 'Login Staff' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        phone_number: 'phone_number',
+        password: 'password',
+      },
+    },
+  })
+  loginStaff(@Body() login: LoginAdminDto): Promise<any> {
+    return this.authService.loginStaff(login.phone_number, login.password);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.TEAMLEADER, Role.TEAMMEMBER)
+  @ApiBearerAuth()
+  @Post('change-password-staff')
+  @ApiOperation({ summary: 'Change Password Staff' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        password: 'password',
+        newPassword: 'new_password',
+      },
+    },
+  })
+  changePasswordStaff(
+    @Body() data: { password: string; newPassword: string },
+    @Req() req: Request,
+  ): Promise<any> {
+    const { userId } = req.user as any;
+    return this.authService.changePasswordStaff(
+      userId,
+      data.password,
+      data.newPassword,
+    );
+  }
+
+  @Post('reset-password-staff')
+  @ApiOperation({ summary: 'Reset Password Staff' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        phone_number: 'phone_number',
+      },
+    },
+  })
+  resetPasswordStaff(
+    @Body() data: { phone_number: string },
+    @Req() req: Request,
+  ): Promise<any> {
+    const { userId } = req.user as any;
+    return this.authService.resetPasswordStaff(userId, data.phone_number);
   }
 
   @Post('create-user')
