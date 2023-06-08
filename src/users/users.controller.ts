@@ -1,8 +1,9 @@
-import { Controller, Get, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Query, Req, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
-import { verifyObj } from './objects/bvn';
+import { VerifyBvnObj, verifyObj } from './objects/bvn';
+import { BankListResponse, bankListResponse } from './objects/bank';
 
 @Controller('users')
 export class UsersController {
@@ -35,5 +36,20 @@ export class UsersController {
   })
   verifyBvn(@Query('bvn') bvn: string): Promise<any> {
     return this.userService.verifyBvn(bvn);
+  }
+
+  @Get('bank-list')
+  @ApiOperation({ summary: 'Get Bank List' })
+  @ApiResponse({
+    status: 200,
+    description: 'The found record',
+    content: {
+      'application/json': {
+        example: bankListResponse,
+      },
+    },
+  })
+  getBankList(): Promise<BankListResponse> {
+    return this.userService.getBankList();
   }
 }

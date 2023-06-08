@@ -99,18 +99,8 @@ model User {
   ColleagueContact         ColleagueContact[]
   EmploymentDetails        EmploymentDetails[]
   CardDetail               CardDetail[]
-  Otp                      Otp?
   role                     Role
   Disbursement             Disbursement[]
-}
-
-model Otp {
-  id         String   @id @default(uuid())
-  otp        String
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String   @unique
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
 }
 
 model BvnData {
