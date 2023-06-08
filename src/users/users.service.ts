@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create_user.dto';
 import { LoginUserDto } from './dto/login_user.dto';
 import { Role } from '@prisma/client';
+import { DojahService } from 'src/dojah/dojah.service';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,7 @@ export class UsersService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private readonly config: ConfigService,
+    private dojah: DojahService,
   ) {}
 
   async create(data: CreateUserDto) {
@@ -120,7 +122,23 @@ export class UsersService {
 
   async verifyBvn(bvn: string) {
     try {
-    } catch (error) {}
+      const bvnData = await this.dojah.checkBvn(bvn);
+
+      return {
+        status: true,
+        data: {
+          ...bvnData.entity,
+          image: '',
+        },
+        message: 'BVN Verified',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        message: `${error}`,
+        status: false,
+        data: {},
+      });
+    }
   }
 
   async verifyAccountNumber(account_number: string, bank_code: string) {

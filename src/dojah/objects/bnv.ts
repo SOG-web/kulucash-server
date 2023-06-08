@@ -1,0 +1,31 @@
+export const bvnResponse = {
+  entity: {
+    bvn: '22171234567',
+    first_name: 'JOHN',
+    last_name: 'DOE',
+    middle_name: 'AHMED',
+    gender: 'Male',
+    date_of_birth: '1997-05-16',
+    phone_number1: '08012345678',
+    image: 'BASE 64 IMAGE',
+    email: 'johndoe@gmail.com',
+    enrollment_bank: 'GTB',
+    enrollment_branch: 'IKEJA',
+    level_of_account: 'LEVEL 2',
+    lga_of_origin: 'OSOGBO',
+    lga_of_residence: 'IKEJA',
+    marital_status: 'SINGLE',
+    name_on_card: '',
+    nationality: 'NIGERIAN',
+    nin: '70123456789',
+    phone_number2: '08012345678',
+    registration_date: '',
+    residential_address: '',
+    state_of_origin: 'OSUN',
+    state_of_residence: 'LAGOS',
+    title: 'MISS',
+    watch_listed: 'NO',
+  },
+};
+
+export type BVNResponse = typeof bvnResponse;

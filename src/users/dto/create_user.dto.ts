@@ -2,7 +2,6 @@ import {
   IsDate,
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
@@ -44,6 +43,18 @@ class BvnDataDto {
 
   @IsString()
   @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  enrollment_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  enrollment_branch: string;
+
+  @IsString()
+  @IsNotEmpty()
   level_of_account: string;
 
   @IsString()
@@ -59,7 +70,6 @@ class BvnDataDto {
   marital_status: string;
 
   @IsString()
-  @IsNotEmpty()
   name_on_card: string;
 
   @IsString()
@@ -83,7 +93,6 @@ class BvnDataDto {
   registration_date: string;
 
   @IsString()
-  @IsNotEmpty()
   residential_address: string;
 
   @IsString()

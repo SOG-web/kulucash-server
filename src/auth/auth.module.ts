@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { SmsService } from 'src/sms/sms.service';
+import { DojahService } from 'src/dojah/dojah.service';
 
 @Module({
   controllers: [AuthController],
@@ -18,6 +19,7 @@ import { SmsService } from 'src/sms/sms.service';
     PrismaService,
     JwtService,
     SmsService,
+    DojahService,
   ],
 })
 export class AuthModule {}
