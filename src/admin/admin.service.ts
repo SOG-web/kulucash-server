@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Department, LoanStatus, Role } from '@prisma/client';
+import { LoanStatus, Role } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAdminDto, LoginAdminDto } from './dto/admin.dto';

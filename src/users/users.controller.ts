@@ -18,14 +18,14 @@ export class UsersController {
   @Get('get-user-profile')
   @ApiOperation({ summary: 'Get User Profile' })
   getProfile(@Req() req: Request): Promise<any> {
-    const id = req.user['id'];
+    const id = req.user['userId'];
     return this.userService.getProlfile(id);
   }
 
   @Get('get-user-banks')
   @ApiOperation({ summary: 'Get Banks' })
   getBanks(@Req() req: Request): Promise<any> {
-    const id = req.user['id'];
+    const id = req.user['userId'];
     return this.userService.getBankAccounts(id);
   }
 
