@@ -1,11 +1,17 @@
-import { Body, Controller, Get, Query, Req, Post } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
-import { VerifyBvnObj, verifyObj } from './objects/bvn';
 import { BankListResponse, bankListResponse } from './objects/bank';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guard/role.guard';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.USER)
+@ApiBearerAuth()
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -21,21 +27,6 @@ export class UsersController {
   getBanks(@Req() req: Request): Promise<any> {
     const id = req.user['id'];
     return this.userService.getBankAccounts(id);
-  }
-
-  @Get('verify-bvn')
-  @ApiOperation({ summary: 'Verify BVN' })
-  @ApiResponse({
-    status: 200,
-    description: 'The found record',
-    content: {
-      'application/json': {
-        example: verifyObj,
-      },
-    },
-  })
-  verifyBvn(@Query('bvn') bvn: string): Promise<any> {
-    return this.userService.verifyBvn(bvn);
   }
 
   @Get('bank-list')

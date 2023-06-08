@@ -1,10 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AdminService } from 'src/admin/admin.service';
 import { CreateAdminDto, LoginAdminDto } from 'src/admin/dto/admin.dto';
 import { createAdminObj } from 'src/admin/objects/admin';
 import { CreateUserDto } from 'src/users/dto/create_user.dto';
 import { LoginUserDto } from 'src/users/dto/login_user.dto';
+import { verifyObj } from 'src/users/objects/bvn';
 import { createUserObj } from 'src/users/objects/user';
 import { UsersService } from 'src/users/users.service';
 
@@ -141,5 +142,20 @@ export class AuthController {
   })
   verifyOtp(@Body() data: { code: string; ref: string }): Promise<any> {
     return this.usersService.verifyOtp(data.code, data.ref);
+  }
+
+  @Get('verify-bvn')
+  @ApiOperation({ summary: 'Verify BVN' })
+  @ApiResponse({
+    status: 200,
+    description: 'The found record',
+    content: {
+      'application/json': {
+        example: verifyObj,
+      },
+    },
+  })
+  verifyBvn(@Query('bvn') bvn: string): Promise<any> {
+    return this.usersService.verifyBvn(bvn);
   }
 }
