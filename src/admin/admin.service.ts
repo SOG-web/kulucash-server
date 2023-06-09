@@ -140,6 +140,7 @@ export class AdminService {
         data: {
           ...data,
           password: hashedPassword,
+          role: data.role,
         },
       });
 
