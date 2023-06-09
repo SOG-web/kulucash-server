@@ -114,7 +114,14 @@ export class TelemarketingService {
     try {
       if (role === Role.TEAMLEADER) {
         const users = await this.prisma.user.findMany({
-          include: { UserProperties: true, Comment: true },
+          include: {
+            UserProperties: true,
+            Comment: {
+              include: {
+                staff: true,
+              },
+            },
+          },
         });
         return {
           data: users,
@@ -131,7 +138,11 @@ export class TelemarketingService {
         },
         include: {
           UserProperties: true,
-          Comment: true,
+          Comment: {
+            include: {
+              staff: true,
+            },
+          },
         },
       });
 
@@ -154,6 +165,7 @@ export class TelemarketingService {
       const assignment = await this.prisma.userProperties.updateMany({
         data: {
           telemarketer_handler_id: handler_id,
+          telemarketer_call_status: CallStatus.NOTCALLED,
         },
         where: {
           userId: { in: userIds },
@@ -191,6 +203,33 @@ export class TelemarketingService {
 
       return {
         data: newComment,
+        status: true,
+        message: 'success',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        message: error.message,
+        status: false,
+        data: null,
+      });
+    }
+  }
+
+  async updateProgress(userId: string, status: CallStatus): Promise<any> {
+    try {
+      const user = await this.prisma.userProperties.update({
+        where: { userId },
+        data: {
+          telemarketer_call_status: status,
+          telemarketer_call_time: new Date(),
+          telemarketer_call_count: {
+            increment: 1,
+          },
+        },
+      });
+
+      return {
+        data: user,
         status: true,
         message: 'success',
       };

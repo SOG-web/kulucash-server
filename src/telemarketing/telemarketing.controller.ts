@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
-import { Department, Role } from '@prisma/client';
+import { CallStatus, Department, Role } from '@prisma/client';
 import { DepartmentRole } from 'src/auth/decorators/department.decorator';
 import { DepartmentGuard } from 'src/auth/guard/department.guard';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -54,5 +54,45 @@ export class TelemarketingController {
     return this.telemartingService.assignClient(data.handler_id, data.userIds);
   }
 
-  //TODO: add controller for adding comment
+  @Post('add-comment')
+  @ApiOperation({ summary: 'Add comment to client' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        userId: 'id',
+        comment: 'comment',
+      },
+    },
+  })
+  async addComment(
+    @Req() req: Request,
+    @Body() data: { userId: string; comment: string },
+  ): Promise<any> {
+    const { userId } = req.user as any;
+
+    const staffId = userId;
+    return this.telemartingService.addComment(
+      data.userId,
+      data.comment,
+      staffId,
+    );
+  }
+
+  @Post('update-progress')
+  @ApiOperation({ summary: 'Update client progress' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        userId: 'id',
+        progress: CallStatus.CALLED,
+      },
+    },
+  })
+  async updateProgress(
+    @Body() data: { userId: string; progress: CallStatus },
+  ): Promise<any> {
+    return this.telemartingService.updateProgress(data.userId, data.progress);
+  }
 }
