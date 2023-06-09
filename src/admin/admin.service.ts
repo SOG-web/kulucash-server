@@ -140,7 +140,6 @@ export class AdminService {
         data: {
           ...data,
           password: hashedPassword,
-          role: data.role,
         },
       });
 
@@ -175,17 +174,7 @@ export class AdminService {
 
   async getStaffs() {
     try {
-      const staff = await this.prisma.staff.findMany({
-        select: {
-          id: true,
-          last_name: true,
-          first_name: true,
-          email: true,
-          phone_number: true,
-          status: true,
-          department: true,
-        },
-      });
+      const staff = await this.prisma.staff.findMany({});
 
       return {
         status: true,
