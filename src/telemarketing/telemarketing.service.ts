@@ -1,22 +1,12 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import {
-  CallStatus,
-  Department,
-  Role,
-  TeleMarketerUserStatus,
-} from '@prisma/client';
+
+import { CallStatus, Role, TeleMarketerUserStatus } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TelemarketingService {
-  constructor(
-    private prisma: PrismaService,
-    private jwt: JwtService,
-    private readonly config: ConfigService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async dashboard(role: Role, userId: string) {
     try {
@@ -90,26 +80,6 @@ export class TelemarketingService {
     }
   }
 
-  async getstaffList(): Promise<any> {
-    try {
-      const staffList = await this.prisma.staff.findMany({
-        where: { department: Department.TELEMARKETER },
-      });
-
-      return {
-        data: staffList,
-        status: true,
-        message: 'success',
-      };
-    } catch (error) {
-      throw new ForbiddenException({
-        message: error.message,
-        status: false,
-        data: null,
-      });
-    }
-  }
-
   async getClients(role: string, userId: string): Promise<any> {
     try {
       if (role === Role.TEAMLEADER) {
@@ -148,88 +118,6 @@ export class TelemarketingService {
 
       return {
         data: users,
-        status: true,
-        message: 'success',
-      };
-    } catch (error) {
-      throw new ForbiddenException({
-        message: error.message,
-        status: false,
-        data: null,
-      });
-    }
-  }
-
-  async assignClient(handler_id: string, userIds: string[]): Promise<any> {
-    try {
-      const assignment = await this.prisma.userProperties.updateMany({
-        data: {
-          telemarketer_handler_id: handler_id,
-          telemarketer_call_status: CallStatus.NOTCALLED,
-        },
-        where: {
-          userId: { in: userIds },
-        },
-      });
-
-      return {
-        data: assignment,
-        status: true,
-        message: 'success',
-      };
-    } catch (error) {
-      throw new ForbiddenException({
-        message: error.message,
-        status: false,
-        data: null,
-      });
-    }
-  }
-
-  async addComment(
-    userId: string,
-    comment: string,
-    staffId: string,
-  ): Promise<any> {
-    try {
-      const newComment = await this.prisma.comment.create({
-        data: {
-          comment,
-          department: Department.TELEMARKETER,
-          user: { connect: { id: userId } },
-          staff: { connect: { id: staffId } },
-        },
-      });
-
-      return {
-        data: newComment,
-        status: true,
-        message: 'success',
-      };
-    } catch (error) {
-      throw new ForbiddenException({
-        message: error.message,
-        status: false,
-        data: null,
-      });
-    }
-  }
-
-  async updateProgress(userId: string, status: CallStatus): Promise<any> {
-    try {
-      const user = await this.prisma.userProperties.update({
-        where: { userId },
-        data: {
-          telemarketer_call_status: status,
-          telemarketer_call_time: new Date(),
-          telemarketer_call_count: {
-            increment: 1,
-          },
-        },
-      });
-
-      return {
-        data: user,
         status: true,
         message: 'success',
       };

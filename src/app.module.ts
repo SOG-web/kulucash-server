@@ -15,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SmsModule } from './sms/sms.module';
 import { PaymentModule } from './payment/payment.module';
 import { DojahModule } from './dojah/dojah.module';
+import { CommonService } from './common/common.service';
 
 @Module({
   imports: [
@@ -41,6 +42,6 @@ import { DojahModule } from './dojah/dojah.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, CommonService],
 })
 export class AppModule {}

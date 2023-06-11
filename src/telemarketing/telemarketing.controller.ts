@@ -7,13 +7,17 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { TelemarketingService } from './telemarketing.service';
 import { Request } from 'express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { CommonService } from 'src/common/common.service';
 
 @Controller('telemarketing')
 @UseGuards(JwtAuthGuard, DepartmentGuard)
 @DepartmentRole(Department.TELEMARKETER)
 @ApiBearerAuth()
 export class TelemarketingController {
-  constructor(private telemartingService: TelemarketingService) {}
+  constructor(
+    private telemartingService: TelemarketingService,
+    private commonService: CommonService,
+  ) {}
 
   @Get('dashboard')
   @ApiOperation({ summary: 'Get telemarketing dashboard' })
@@ -26,7 +30,7 @@ export class TelemarketingController {
   @Get('staff-list')
   @ApiOperation({ summary: 'Get telemarketing staff list' })
   async staffList(): Promise<any> {
-    return this.telemartingService.getstaffList();
+    return this.commonService.getstaffList(Department.TELEMARKETER);
   }
 
   @Get('get-clients')
@@ -37,7 +41,7 @@ export class TelemarketingController {
   }
 
   @Roles(Role.TEAMLEADER)
-  @Get('assign-client')
+  @Post('assign-client')
   @ApiOperation({ summary: 'Assign client to telemarketing staff' })
   @ApiBody({
     required: true,
@@ -51,7 +55,11 @@ export class TelemarketingController {
   async assignClient(
     @Body() data: { handler_id: string; userIds: string[] },
   ): Promise<any> {
-    return this.telemartingService.assignClient(data.handler_id, data.userIds);
+    const { handler_id } = data;
+    this.commonService.assignClient(data.userIds, {
+      telemarketer_handler_id: handler_id,
+      telemarketer_call_status: CallStatus.NOTCALLED,
+    });
   }
 
   @Post('add-comment')
@@ -72,10 +80,11 @@ export class TelemarketingController {
     const { userId } = req.user as any;
 
     const staffId = userId;
-    return this.telemartingService.addComment(
+    return this.commonService.addComment(
       data.userId,
       data.comment,
       staffId,
+      Department.TELEMARKETER,
     );
   }
 
@@ -93,6 +102,13 @@ export class TelemarketingController {
   async updateProgress(
     @Body() data: { userId: string; progress: CallStatus },
   ): Promise<any> {
-    return this.telemartingService.updateProgress(data.userId, data.progress);
+    const status = data.progress;
+    return this.commonService.updateCallProgress(data.userId, {
+      telemarketer_call_status: status,
+      telemarketer_call_time: new Date(),
+      telemarketer_call_count: {
+        increment: 1,
+      },
+    });
   }
 }
