@@ -65,19 +65,21 @@ model Admin {
 }
 
 model Staff {
-  id           String      @id @unique @default(nanoid(5))
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
-  phone_number String      @unique
-  email        String      @unique
-  password     String
-  first_name   String
-  last_name    String
-  status       StaffStatus @default(OFFLINE)
-  lock         Boolean     @default(false)
-  department   Department
-  role         Role
-  Comment      Comment[]
+  id            String          @id @unique @default(nanoid(5))
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  phone_number  String          @unique
+  email         String          @unique
+  password      String
+  first_name    String
+  last_name     String
+  status        StaffStatus     @default(OFFLINE)
+  lock          Boolean         @default(false)
+  department    Department
+  role          Role
+  Comment       Comment[]
+  ChatList      ChatList[]
+  ResolvedIssue ResolvedIssue[]
 }
 
 model User {
@@ -122,6 +124,8 @@ model User {
   Disbursement             Disbursement[]
   UserProperties           UserProperties?
   Comment                  Comment[]
+  ChatList                 ChatList[]
+  ResolvedIssue            ResolvedIssue[]
 }
 
 model UserProperties {
@@ -286,4 +290,40 @@ model Disbursement {
   userId     String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+model Messages {
+  id              String         @id @unique @default(uuid())
+  message         String
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  ChatList        ChatList?      @relation(fields: [chatListId], references: [id])
+  chatListId      String?
+  ResolvedIssue   ResolvedIssue? @relation(fields: [resolvedIssueId], references: [id])
+  resolvedIssueId String?
+}
+
+model ChatList {
+  id         String     @id @unique @default(uuid())
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  Messages   Messages[]
+  Handler    Staff?     @relation(fields: [handlerId], references: [id])
+  handlerId  String?
+  resolved   Boolean    @default(false)
+  online     Boolean    @default(true)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+}
+
+model ResolvedIssue {
+  id         String     @id @unique @default(uuid())
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  Messages   Messages[]
+  Handler    Staff?     @relation(fields: [handlerId], references: [id])
+  handlerId  String?
+  resolved   Boolean    @default(true)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
 }
