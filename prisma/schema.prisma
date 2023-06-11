@@ -47,7 +47,7 @@ enum CallStatus {
 }
 
 model Admin {
-  id           String   @id @unique @default(uuid())
+  id           String   @id @unique @default(nanoid(5))
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
   phone_number String   @unique
@@ -59,7 +59,7 @@ model Admin {
 }
 
 model Staff {
-  id           String     @id @unique @default(uuid())
+  id           String     @id @unique @default(nanoid(5))
   created_at   DateTime   @default(now())
   updated_at   DateTime   @updatedAt
   phone_number String     @unique
@@ -75,7 +75,7 @@ model Staff {
 }
 
 model User {
-  id                       String              @id @unique @default(uuid())
+  id                       String              @id @unique @default(nanoid(5))
   created_at               DateTime            @default(now())
   updated_at               DateTime            @updatedAt
   first_name               String
