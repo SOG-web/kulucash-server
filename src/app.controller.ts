@@ -1,7 +1,14 @@
 import { Controller, ForbiddenException, Get, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { LoanStatus, Department, Role } from '@prisma/client';
+import {
+  LoanStatus,
+  Department,
+  Role,
+  CallStatus,
+  TeleMarketerUserStatus,
+  StaffStatus,
+} from '@prisma/client';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { RolesGuard } from './auth/guard/role.guard';
 import { Roles } from './auth/decorators/roles.decorator';
@@ -28,6 +35,9 @@ export class AppController {
           loanStatus: Object.values(LoanStatus),
           department: Object.values(Department),
           role: Object.values(Role),
+          callStatus: Object.values(CallStatus),
+          telemarketingUserStatus: Object.values(TeleMarketerUserStatus),
+          staffStatus: Object.values(StaffStatus),
         },
       };
     } catch (error) {

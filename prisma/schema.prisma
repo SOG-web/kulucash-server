@@ -46,6 +46,12 @@ enum CallStatus {
   INPROGRESS
 }
 
+enum StaffStatus {
+  ONLINE
+  AWAY
+  OFFLINE
+}
+
 model Admin {
   id           String   @id @unique @default(nanoid(5))
   created_at   DateTime @default(now())
@@ -59,16 +65,16 @@ model Admin {
 }
 
 model Staff {
-  id           String     @id @unique @default(nanoid(5))
-  created_at   DateTime   @default(now())
-  updated_at   DateTime   @updatedAt
-  phone_number String     @unique
-  email        String     @unique
+  id           String      @id @unique @default(nanoid(5))
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  phone_number String      @unique
+  email        String      @unique
   password     String
   first_name   String
   last_name    String
-  status       String?
-  lock         Boolean    @default(false)
+  status       StaffStatus @default(OFFLINE)
+  lock         Boolean     @default(false)
   department   Department
   role         Role
   Comment      Comment[]
