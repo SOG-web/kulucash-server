@@ -2,6 +2,7 @@ import {
   IsDate,
   IsEmail,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
   ValidateNested,
@@ -185,6 +186,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @Type(() => BvnDataDto)
+  @IsObject()
   bvn_data: BvnDataDto;
 }
