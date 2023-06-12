@@ -186,5 +186,5 @@ export class CreateUserDto {
   password: string;
 
   @IsObject()
-  bvn_data: BvnDataDto;
+  bvn_data: any;
 }
