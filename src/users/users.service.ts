@@ -67,6 +67,20 @@ export class UsersService {
         token: token,
       };
     } catch (error) {
+      try {
+        await this.prisma.user.delete({
+          where: {
+            email: data.email,
+          },
+        });
+
+        await this.prisma.bvnData.delete({
+          where: {
+            bvn: data.bvn,
+          },
+        });
+      } catch (error) {}
+
       throw new ForbiddenException({
         details: `${error}`,
         status: false,
