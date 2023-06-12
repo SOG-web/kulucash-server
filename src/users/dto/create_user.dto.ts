@@ -185,7 +185,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @ValidateNested()
   @Type(() => BvnDataDto)
   bvn_data: BvnDataDto;
 }
