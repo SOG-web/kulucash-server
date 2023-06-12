@@ -91,6 +91,12 @@ export class TelemarketingService {
                 staff: true,
               },
             },
+            BankDetail: true,
+            Loans: true,
+            EmergencyContact: true,
+            EmploymentDetails: true,
+            ColleagueContact: true,
+            bvn_data: true,
           },
         });
         return {
@@ -113,6 +119,12 @@ export class TelemarketingService {
               staff: true,
             },
           },
+          BankDetail: true,
+          Loans: true,
+          EmergencyContact: true,
+          EmploymentDetails: true,
+          ColleagueContact: true,
+          bvn_data: true,
         },
       });
 
