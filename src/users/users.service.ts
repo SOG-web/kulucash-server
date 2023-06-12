@@ -35,17 +35,26 @@ export class UsersService {
 
       const hashedPassword = await argon.hash(data.password);
 
+      // remove data.bvn_data from data
+      const { bvn_data, ...rest } = data;
+
       const user = await this.prisma.user.create({
         data: {
-          ...data,
+          ...rest,
           password: hashedPassword,
           level: 1,
           max_amount: 7000,
           min_amount: 1000,
           role: Role.USER,
-          bvn_data: {
-            create: {
-              ...data.bvn_data,
+        },
+      });
+
+      await this.prisma.bvnData.create({
+        data: {
+          ...bvn_data,
+          user: {
+            connect: {
+              id: user.id,
             },
           },
         },
