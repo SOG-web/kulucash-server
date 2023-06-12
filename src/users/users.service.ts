@@ -43,13 +43,11 @@ export class UsersService {
           max_amount: 7000,
           min_amount: 1000,
           role: Role.USER,
-        },
-      });
-
-      await this.prisma.bvnData.create({
-        data: {
-          ...data.bvn_data,
-          userId: user.id,
+          bvn_data: {
+            create: {
+              ...data.bvn_data,
+            },
+          },
         },
       });
 
