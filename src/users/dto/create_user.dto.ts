@@ -5,7 +5,6 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -31,7 +30,7 @@ class BvnDataDto {
   gender: string;
 
   @IsDate()
-  @Type(() => Date)
+  @IsString()
   date_of_birth: Date;
 
   @IsString()
@@ -125,8 +124,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   last_name: string;
 
-  @IsDate()
-  @Type(() => Date)
+  @IsString()
   @IsNotEmpty()
   dob: Date;
 
