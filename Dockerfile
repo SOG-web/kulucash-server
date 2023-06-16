@@ -26,13 +26,7 @@ RUN npx prisma generate
 
 RUN npm run build
 
-# get the database url from the environment variable
-ARG DATABASE_URL=postgres://rou-postgress:rou-postgress@130.61.105.134:49191/kulucash
-
-ENV DATABASE_URL=${DATABASE_URL}
-
-RUN npm run db:dev:prod
 
 EXPOSE 3000
 
-CMD [ "npm", "run","start:prod" ]
+CMD [ "npm", "run","start:docker" ]

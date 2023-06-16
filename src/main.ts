@@ -23,7 +23,7 @@ async function bootstrap() {
     .addTag('kulucash')
     .addBearerAuth()
     .addServer('http://130.61.105.134:3000')
-    .addServer('http://localhost:3000')
+    .addServer('http://localhost:3005')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
