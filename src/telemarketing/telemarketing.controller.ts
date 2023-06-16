@@ -22,8 +22,8 @@ export class TelemarketingController {
   @Get('dashboard')
   @ApiOperation({ summary: 'Get telemarketing dashboard' })
   async dashboard(@Req() req: Request): Promise<any> {
-    const { role, userId } = req.user as any;
-    return this.telemartingService.dashboard(role, userId);
+    const { role, id } = req.user as any;
+    return this.telemartingService.dashboard(role, id);
   }
 
   @Roles(Role.TEAMLEADER)
@@ -36,8 +36,9 @@ export class TelemarketingController {
   @Get('get-clients')
   @ApiOperation({ summary: 'Get telemarketing clients' })
   async getClients(@Req() req: Request): Promise<any> {
-    const { role, userId } = req.user as any;
-    return this.telemartingService.getClients(role, userId);
+    // console.log(req.user);
+    const { role, id } = req.user as any;
+    return this.telemartingService.getClients(role, id);
   }
 
   @Roles(Role.TEAMLEADER)
@@ -77,9 +78,9 @@ export class TelemarketingController {
     @Req() req: Request,
     @Body() data: { userId: string; comment: string },
   ): Promise<any> {
-    const { userId } = req.user as any;
+    const { id } = req.user as any;
 
-    const staffId = userId;
+    const staffId = id;
     return this.commonService.addComment(
       data.userId,
       data.comment,

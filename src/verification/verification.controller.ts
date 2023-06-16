@@ -78,9 +78,9 @@ export class VerificationController {
     @Req() req: Request,
     @Body() data: { userId: string; comment: string },
   ): Promise<any> {
-    const { userId } = req.user as any;
+    const { id } = req.user as any;
 
-    const staffId = userId;
+    const staffId = id;
     return this.commonService.addComment(
       data.userId,
       data.comment,

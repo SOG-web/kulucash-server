@@ -29,8 +29,8 @@ class BvnDataDto {
   @IsNotEmpty()
   gender: string;
 
-  @IsDate()
-  @Type(() => Date)
+  @IsString()
+  @IsNotEmpty()
   date_of_birth: Date;
 
   @IsString()
@@ -86,10 +86,6 @@ class BvnDataDto {
 
   @IsString()
   @IsNotEmpty()
-  reference: string;
-
-  @IsString()
-  @IsNotEmpty()
   registration_date: string;
 
   @IsString()
@@ -124,10 +120,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   last_name: string;
 
-  @IsDate()
-  @Type(() => Date)
+  @IsString()
   @IsNotEmpty()
-  dob: Date;
+  dob: string;
 
   @IsString()
   @IsNotEmpty()

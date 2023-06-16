@@ -16,6 +16,8 @@ import { SmsModule } from './sms/sms.module';
 import { PaymentModule } from './payment/payment.module';
 import { DojahModule } from './dojah/dojah.module';
 import { CommonService } from './common/common.service';
+import { CronsModule } from './crons/crons.module';
+import { CronsService } from './crons/crons.service';
 
 @Module({
   imports: [
@@ -40,6 +42,7 @@ import { CommonService } from './common/common.service';
       ],
       isGlobal: true,
     }),
+    CronsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, CommonService],

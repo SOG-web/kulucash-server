@@ -344,7 +344,7 @@ export class UsersService {
           ColleagueContact: true,
           EmergencyContact: true,
           EmploymentDetails: true,
-          Loans: true,
+          UserProperties: true,
         },
       });
 
