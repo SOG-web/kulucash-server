@@ -81,6 +81,7 @@ export class TelemarketingService {
   }
 
   async getClients(role: string, userId: string): Promise<any> {
+    // console.log(role, userId);
     try {
       if (role === Role.TEAMLEADER) {
         const users = await this.prisma.user.findMany({
@@ -92,7 +93,6 @@ export class TelemarketingService {
               },
             },
             BankDetail: true,
-            Loans: true,
             EmergencyContact: true,
             EmploymentDetails: true,
             ColleagueContact: true,
@@ -120,7 +120,6 @@ export class TelemarketingService {
             },
           },
           BankDetail: true,
-          Loans: true,
           EmergencyContact: true,
           EmploymentDetails: true,
           ColleagueContact: true,

@@ -10,7 +10,7 @@ export class VerificationService {
   async dashboard(role: Role, userId: string) {
     try {
       if (role === Role.TEAMLEADER) {
-        const total = await this.prisma.user.count({
+        const total = await this.prisma.userProperties.count({
           where: {
             Loans: {
               every: {
@@ -20,7 +20,7 @@ export class VerificationService {
           },
         });
 
-        const accepted = await this.prisma.user.count({
+        const accepted = await this.prisma.userProperties.count({
           where: {
             Loans: {
               every: {
@@ -30,7 +30,7 @@ export class VerificationService {
           },
         });
 
-        const rejected = await this.prisma.user.count({
+        const rejected = await this.prisma.userProperties.count({
           where: {
             Loans: {
               every: {
@@ -44,16 +44,17 @@ export class VerificationService {
           where: { verificator_call_status: CallStatus.CALLED },
           take: 10,
           orderBy: { verificator_call_time: 'desc' },
+          include: {
+            user: true,
+          },
         });
 
         return { total, accepted, rejected, recentCalled };
       }
 
-      const total = await this.prisma.user.count({
+      const total = await this.prisma.userProperties.count({
         where: {
-          UserProperties: {
-            verificator_handler_id: userId,
-          },
+          verificator_handler_id: userId,
           AND: {
             Loans: {
               every: {
@@ -64,11 +65,9 @@ export class VerificationService {
         },
       });
 
-      const accepted = await this.prisma.user.count({
+      const accepted = await this.prisma.userProperties.count({
         where: {
-          UserProperties: {
-            verificator_handler_id: userId,
-          },
+          verificator_handler_id: userId,
           AND: {
             Loans: {
               every: {
@@ -79,11 +78,9 @@ export class VerificationService {
         },
       });
 
-      const rejected = await this.prisma.user.count({
+      const rejected = await this.prisma.userProperties.count({
         where: {
-          UserProperties: {
-            verificator_handler_id: userId,
-          },
+          verificator_handler_id: userId,
           AND: {
             Loans: {
               every: {
@@ -101,6 +98,9 @@ export class VerificationService {
         },
         take: 10,
         orderBy: { verificator_call_time: 'desc' },
+        include: {
+          user: true,
+        },
       });
 
       return { total, accepted, rejected, recentCalled };
@@ -116,7 +116,7 @@ export class VerificationService {
   async getClients(role: string, userId: string): Promise<any> {
     try {
       if (role === Role.TEAMLEADER) {
-        const users = await this.prisma.user.findMany({
+        const users = await this.prisma.userProperties.findMany({
           where: {
             Loans: {
               every: {
@@ -131,7 +131,7 @@ export class VerificationService {
             },
           },
           include: {
-            UserProperties: true,
+            user: true,
             Comment: {
               include: {
                 staff: true,
@@ -150,11 +150,9 @@ export class VerificationService {
         };
       }
 
-      const users = await this.prisma.user.findMany({
+      const users = await this.prisma.userProperties.findMany({
         where: {
-          UserProperties: {
-            verificator_handler_id: userId,
-          },
+          verificator_handler_id: userId,
           AND: {
             Loans: {
               every: {
@@ -170,7 +168,6 @@ export class VerificationService {
           },
         },
         include: {
-          UserProperties: true,
           Comment: {
             include: {
               staff: true,
@@ -180,6 +177,7 @@ export class VerificationService {
             },
           },
           Loans: true,
+          user: true,
         },
       });
 
