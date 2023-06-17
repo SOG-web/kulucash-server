@@ -58,7 +58,14 @@ enum LoanRepaymentType {
 }
 
 enum OverDueCategory {
+  D1
   D2
+  D0
+  S1
+  S2
+  M1
+  M2
+  M3
 }
 
 model Admin {

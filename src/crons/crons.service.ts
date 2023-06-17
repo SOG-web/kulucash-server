@@ -5,10 +5,10 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 export class CronsService {
   private readonly logger = new Logger(CronsService.name);
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
-  handleCron() {
-    this.logger.debug('Called every 30 seconds');
-  }
+  // @Cron(CronExpression.EVERY_30_SECONDS)
+  // handleCron() {
+  //   this.logger.debug('Called every 30 seconds');
+  // }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   everdayMidnightCron() {
