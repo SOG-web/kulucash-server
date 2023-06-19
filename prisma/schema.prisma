@@ -136,6 +136,7 @@ model User {
   eligible_to_collect_loan Boolean             @default(false)
   image                    String?
   salary_range             String?
+  id_card                  String?
   bvn_data                 BvnData?
   BankDetail               BankDetail[]
   EmergencyContact         EmergencyContact[]

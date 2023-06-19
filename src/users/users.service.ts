@@ -331,6 +331,8 @@ export class UsersService {
     }
   }
 
+  async createCard(userId: string, data: any) {}
+
   async getProlfile(userId: string) {
     try {
       const user = await this.prisma.user.findUnique({
@@ -344,7 +346,13 @@ export class UsersService {
           ColleagueContact: true,
           EmergencyContact: true,
           EmploymentDetails: true,
-          UserProperties: true,
+          UserProperties: {
+            include: {
+              Loans: true,
+              Disbursement: true,
+              ChatList: true,
+            },
+          },
         },
       });
 
