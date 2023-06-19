@@ -8,6 +8,8 @@ import {
   CallStatus,
   TeleMarketerUserStatus,
   StaffStatus,
+  OverDueCategory,
+  DisbursementStatus,
 } from '@prisma/client';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { RolesGuard } from './auth/guard/role.guard';
@@ -38,6 +40,8 @@ export class AppController {
           callStatus: Object.values(CallStatus),
           telemarketingUserStatus: Object.values(TeleMarketerUserStatus),
           staffStatus: Object.values(StaffStatus),
+          overdueCategory: Object.values(OverDueCategory),
+          disbursementStatus: Object.values(DisbursementStatus),
         },
       };
     } catch (error) {

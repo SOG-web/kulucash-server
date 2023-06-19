@@ -68,6 +68,13 @@ enum OverDueCategory {
   M3
 }
 
+enum DisbursementStatus {
+  PAID
+  FAILED
+  PENDING
+  NOTDISBURSED
+}
+
 model Admin {
   id           String   @id @unique @default(nanoid(5))
   created_at   DateTime @default(now())
@@ -130,7 +137,7 @@ model User {
   image                    String?
   salary_range             String?
   bvn_data                 BvnData?
-  BankDetail               BankDetail?
+  BankDetail               BankDetail[]
   EmergencyContact         EmergencyContact[]
   ColleagueContact         ColleagueContact[]
   EmploymentDetails        EmploymentDetails[]
@@ -226,7 +233,7 @@ model BankDetail {
   account_number String
   account_name   String
   user           User   @relation(fields: [userId], references: [id])
-  userId         String @unique
+  userId         String
 }
 
 model CardDetail {
@@ -269,30 +276,31 @@ model EmploymentDetails {
 }
 
 model Loans {
-  id                  String           @id @unique @default(uuid())
+  id                  String             @id @unique @default(uuid())
   amount              Float
   duration            Int
   loan_request_status LoanStatus
   amount_requested    Float
   amount_disbursed    Float
+  disbursementStatus  DisbursementStatus @default(NOTDISBURSED)
   amount_owed         Float
   amount_paid         Float
   loan_date           DateTime
   loan_due_date       DateTime
   paid_at             DateTime?
-  paid                Boolean          @default(false)
+  paid                Boolean            @default(false)
   repayment_frequency String?
   status              LoanStatus
   purpose             String
-  interest            Interest         @relation(fields: [interestId], references: [id])
+  interest            Interest           @relation(fields: [interestId], references: [id])
   interestId          String
   overDueFee          Float
   overDueDays         Int
   overDueCategory     OverDueCategory?
-  created_at          DateTime         @default(now())
-  updated_at          DateTime         @updatedAt
+  created_at          DateTime           @default(now())
+  updated_at          DateTime           @updatedAt
   LoanRepayment       LoanRepayment[]
-  UserProperties      UserProperties   @relation(fields: [userPropertiesId], references: [id])
+  UserProperties      UserProperties     @relation(fields: [userPropertiesId], references: [id])
   userPropertiesId    String
 }
 

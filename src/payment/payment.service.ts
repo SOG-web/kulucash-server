@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { InitTransactionDto, VerifyTransactionDto } from './dto/payment.dto';
+import { DisbursementDto } from './dto/disbursement.dto';
 
 @Injectable()
 export class PaymentService {
@@ -192,6 +193,8 @@ export class PaymentService {
     }
     res.send(200);
   }
+
+  async disburseLoan(data: DisbursementDto) {}
 }
 
 const successObjExample = {
