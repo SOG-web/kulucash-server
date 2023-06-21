@@ -10,7 +10,7 @@ import * as fs from 'fs';
 @Injectable()
 export class CloudinaryService {
   async uploadImage(
-    file: Express.Multer.File,
+    file: any,
     options?: UploadApiOptions,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     try {
