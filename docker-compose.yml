@@ -18,6 +18,9 @@ services:
       DOJAH_API_KEY: ${DOJAH_API_KEY}
       DOJAH_SECRET_KEY: ${DOJAH_SECRET_KEY}
       DOJAH_APP_ID: ${DOJAH_APP_ID}
+      CLOUD_CLOUD_NAME: ${CLOUD_CLOUD_NAME}
+      CLOUD_API_KEY: ${CLOUD_API_KEY}
+      CLOUD_API_SECRET: ${CLOUD_API_SECRET}
     ports:
       - 3005:3000
     networks:

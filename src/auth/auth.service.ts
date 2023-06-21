@@ -46,6 +46,7 @@ export class AuthService {
         staff.email,
         staff.role,
         staff.department,
+        staff.lock,
       );
 
       return {
@@ -145,8 +146,9 @@ export class AuthService {
     email: string,
     role: string,
     department: string,
+    lock?: boolean | null,
   ): string {
-    const payload = { userId, email, role, department };
+    const payload = { userId, email, role, department, lock };
 
     const secret = process.env.JWT_SECRET || this.config.get('JWT_SECRET');
     return this.jwt.sign(payload, { expiresIn: '1d', secret: secret });

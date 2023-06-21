@@ -52,6 +52,29 @@ enum StaffStatus {
   OFFLINE
 }
 
+enum LoanRepaymentType {
+  FULL
+  PARTIAL
+}
+
+enum OverDueCategory {
+  D1
+  D2
+  D0
+  S1
+  S2
+  M1
+  M2
+  M3
+}
+
+enum DisbursementStatus {
+  PAID
+  FAILED
+  PENDING
+  NOTDISBURSED
+}
+
 model Admin {
   id           String   @id @unique @default(nanoid(5))
   created_at   DateTime @default(now())
@@ -89,7 +112,7 @@ model User {
   first_name               String
   middle_name              String?
   last_name                String
-  dob                      DateTime
+  dob                      String
   gender                   String
   nationality              String
   bvn                      String              @unique
@@ -113,19 +136,16 @@ model User {
   eligible_to_collect_loan Boolean             @default(false)
   image                    String?
   salary_range             String?
+  id_card                  String?
   bvn_data                 BvnData?
-  Loans                    Loans[]
-  BankDetail               BankDetail?
+  BankDetail               BankDetail[]
   EmergencyContact         EmergencyContact[]
   ColleagueContact         ColleagueContact[]
   EmploymentDetails        EmploymentDetails[]
   CardDetail               CardDetail[]
   role                     Role
-  Disbursement             Disbursement[]
   UserProperties           UserProperties?
   Comment                  Comment[]
-  ChatList                 ChatList[]
-  ResolvedIssue            ResolvedIssue[]
 }
 
 model UserProperties {
@@ -135,35 +155,44 @@ model UserProperties {
   user                     User                   @relation(fields: [userId], references: [id])
   userId                   String                 @unique
   telemarketer_call_status CallStatus             @default(NOTCALLED)
-  telemarketer_handler_id  String
-  telemarketer_call_count  Int
-  telemarketer_call_time   DateTime?
+  telemarketer_handler_id  String?
+  telemarketer_call_count  Int?
+  telemarketer_call_time   String?
   telemarketer_status      TeleMarketerUserStatus @default(ACTIVE)
 
   verificator_call_status CallStatus
-  verificator_call_count  Int
-  verificator_handler_id  String
-  verificator_call_time   DateTime?
+  verificator_call_count  Int?
+  verificator_handler_id  String?
+  verificator_call_time   String?
 
+  collector_call_status CallStatus
+  collector_call_count  Int?
+  collector_handler_id  String?
+  collector_call_time   String?
+
+  customer_service_call_count  Int?
   customer_service_call_status CallStatus
-  collector_call_status        CallStatus
+  customer_service_handler_id  String?
 
-  customer_service_call_count Int
-  collector_call_count        Int
-  customer_service_handler_id String
-  collector_handler_id        String
+  Loans         Loans[]
+  Comment       Comment[]
+  ChatList      ChatList[]
+  ResolvedIssue ResolvedIssue[]
+  Disbursement  Disbursement[]
 }
 
 model Comment {
-  id         String     @id @unique @default(uuid())
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
-  comment    String
-  user       User       @relation(fields: [userId], references: [id])
-  userId     String
-  department Department
-  staff      Staff      @relation(fields: [staffId], references: [id])
-  staffId    String
+  id               String          @id @unique @default(uuid())
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+  comment          String
+  user             User            @relation(fields: [userId], references: [id])
+  userId           String
+  department       Department
+  staff            Staff           @relation(fields: [staffId], references: [id])
+  staffId          String
+  UserProperties   UserProperties? @relation(fields: [userPropertiesId], references: [id])
+  userPropertiesId String?
 }
 
 model BvnData {
@@ -173,7 +202,7 @@ model BvnData {
   last_name           String
   middle_name         String?
   gender              String
-  date_of_birth       DateTime
+  date_of_birth       String
   phone_number1       String
   image               String
   email               String
@@ -185,9 +214,8 @@ model BvnData {
   marital_status      String
   name_on_card        String
   nationality         String
-  nin                 String   @unique
+  nin                 String?  @unique
   phone_number2       String?
-  reference           String
   registration_date   String
   residential_address String
   state_of_origin     String
@@ -201,22 +229,25 @@ model BvnData {
 }
 
 model BankDetail {
-  id             String @id @default(uuid())
+  id             String  @id @default(uuid())
   bank_name      String
+  bank_code      String
   account_number String
   account_name   String
-  user           User   @relation(fields: [userId], references: [id])
-  userId         String @unique
+  user           User    @relation(fields: [userId], references: [id])
+  userId         String
+  Loans          Loans[]
 }
 
 model CardDetail {
-  id         String @id @default(uuid())
+  id         String  @id @default(uuid())
   email      String
   card_no    String
   cart_token String
   card_name  String
-  user       User   @relation(fields: [userId], references: [id])
+  user       User    @relation(fields: [userId], references: [id])
   userId     String
+  Loans      Loans[]
 }
 
 model EmergencyContact {
@@ -237,39 +268,59 @@ model ColleagueContact {
 }
 
 model EmploymentDetails {
-  id                 String   @id @unique @default(uuid())
+  id                 String @id @unique @default(uuid())
   company_name       String
   company_address    String
   role               String
   salary_range       String
   employment_status  String
-  date_of_employment DateTime
-  user               User     @relation(fields: [userId], references: [id])
+  date_of_employment String
+  user               User   @relation(fields: [userId], references: [id])
   userId             String
 }
 
 model Loans {
-  id                  String     @id @unique @default(uuid())
-  user                User       @relation(fields: [userId], references: [id])
-  userId              String
+  id                  String             @id @unique @default(uuid())
   amount              Float
   duration            Int
   loan_request_status LoanStatus
   amount_requested    Float
-  amount_disbursed    Float
-  amount_owed         Float
-  amount_paid         Float
-  loan_date           DateTime
-  loan_due_date       DateTime
+  amount_disbursed    Float?
+  disbursementStatus  DisbursementStatus @default(NOTDISBURSED)
+  amount_owed         Float?
+  amount_paid         Float?
+  loan_date           DateTime?
+  loan_due_date       DateTime?
   paid_at             DateTime?
-  paid                Boolean    @default(false)
+  paid                Boolean            @default(false)
   repayment_frequency String?
   status              LoanStatus
   purpose             String
-  interest            Interest   @relation(fields: [interestId], references: [id])
+  interest            Interest           @relation(fields: [interestId], references: [id])
   interestId          String
-  created_at          DateTime   @default(now())
-  updated_at          DateTime   @updatedAt
+  overDueFee          Float
+  overDueDays         Int
+  overDueCategory     OverDueCategory?
+  created_at          DateTime           @default(now())
+  updated_at          DateTime           @updatedAt
+  LoanRepayment       LoanRepayment[]
+  UserProperties      UserProperties     @relation(fields: [userPropertiesId], references: [id])
+  userPropertiesId    String
+  Bank                BankDetail         @relation(fields: [bankId], references: [id])
+  bankId              String
+  Card                CardDetail         @relation(fields: [cardId], references: [id])
+  cardId              String
+}
+
+model LoanRepayment {
+  id         String            @id @unique @default(uuid())
+  amount     Float
+  loan       Loans             @relation(fields: [loanId], references: [id])
+  loanId     String
+  type       LoanRepaymentType
+  handler_id String
+  created_at DateTime          @default(now())
+  updated_at DateTime          @updatedAt
 }
 
 model Interest {
@@ -284,12 +335,12 @@ model Interest {
 }
 
 model Disbursement {
-  id         String   @id @unique @default(uuid())
-  amount     Float
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id               String         @id @unique @default(uuid())
+  amount           Float
+  created_at       DateTime       @default(now())
+  updated_at       DateTime       @updatedAt
+  UserProperties   UserProperties @relation(fields: [userPropertiesId], references: [id])
+  userPropertiesId String
 }
 
 model Messages {
@@ -304,26 +355,26 @@ model Messages {
 }
 
 model ChatList {
-  id         String     @id @unique @default(uuid())
-  user       User       @relation(fields: [userId], references: [id])
-  userId     String
-  Messages   Messages[]
-  Handler    Staff?     @relation(fields: [handlerId], references: [id])
-  handlerId  String?
-  resolved   Boolean    @default(false)
-  online     Boolean    @default(true)
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
+  id               String         @id @unique @default(uuid())
+  Messages         Messages[]
+  Handler          Staff?         @relation(fields: [handlerId], references: [id])
+  handlerId        String?
+  resolved         Boolean        @default(false)
+  online           Boolean        @default(true)
+  created_at       DateTime       @default(now())
+  updated_at       DateTime       @updatedAt
+  UserProperties   UserProperties @relation(fields: [userPropertiesId], references: [id])
+  userPropertiesId String
 }
 
 model ResolvedIssue {
-  id         String     @id @unique @default(uuid())
-  user       User       @relation(fields: [userId], references: [id])
-  userId     String
-  Messages   Messages[]
-  Handler    Staff?     @relation(fields: [handlerId], references: [id])
-  handlerId  String?
-  resolved   Boolean    @default(true)
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
+  id               String         @id @unique @default(uuid())
+  Messages         Messages[]
+  Handler          Staff?         @relation(fields: [handlerId], references: [id])
+  handlerId        String?
+  resolved         Boolean        @default(true)
+  created_at       DateTime       @default(now())
+  updated_at       DateTime       @updatedAt
+  UserProperties   UserProperties @relation(fields: [userPropertiesId], references: [id])
+  userPropertiesId String
 }

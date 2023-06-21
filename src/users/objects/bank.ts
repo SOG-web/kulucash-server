@@ -1,3 +1,5 @@
+import { createBankAccountDto } from '../dto/bank.dto';
+
 export const bankListResponse = {
   status: true,
   data: [
@@ -830,3 +832,10 @@ export const bankListResponse = {
 };
 
 export type BankListResponse = typeof bankListResponse;
+
+export const createBankAccount: createBankAccountDto = {
+  bank_name: '',
+  bank_code: '',
+  account_number: '',
+  account_name: '',
+};

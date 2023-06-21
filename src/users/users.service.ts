@@ -6,10 +6,11 @@ import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create_user.dto';
 import { LoginUserDto } from './dto/login_user.dto';
-import { Role } from '@prisma/client';
+import { CallStatus, Role } from '@prisma/client';
 import { DojahService } from 'src/dojah/dojah.service';
 import { SmsService } from 'src/sms/sms.service';
 import { OtpChannel, OtpTokenType } from 'src/sms/enums/otp.enums';
+import { createBankAccountDto } from './dto/bank.dto';
 
 @Injectable()
 export class UsersService {
@@ -46,6 +47,20 @@ export class UsersService {
           max_amount: 7000,
           min_amount: 1000,
           role: Role.USER,
+        },
+      });
+
+      await this.prisma.userProperties.create({
+        data: {
+          telemarketer_call_status: CallStatus.NOTCALLED,
+          verificator_call_status: CallStatus.NOTCALLED,
+          collector_call_status: CallStatus.NOTCALLED,
+          customer_service_call_status: CallStatus.NOTCALLED,
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
       });
 
@@ -300,14 +315,32 @@ export class UsersService {
     }
   }
 
-  async verifyAccountNumber(account_number: string, bank_code: string) {
+  async createBankAccount(userId: string, data: createBankAccountDto) {
     try {
-    } catch (error) {}
-  }
+      //TODO: verify account details first
+      const bank = await this.prisma.bankDetail.create({
+        data: {
+          ...data,
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      });
 
-  async createBankAccount(userId: string, data: any) {
-    try {
-    } catch (error) {}
+      return {
+        status: true,
+        message: 'Bank Created Successfully',
+        data: bank,
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: false,
+        message: 'Error creating Bank',
+        data: null,
+      });
+    }
   }
 
   async getBankAccounts(userId: string) {
@@ -344,7 +377,13 @@ export class UsersService {
           ColleagueContact: true,
           EmergencyContact: true,
           EmploymentDetails: true,
-          Loans: true,
+          UserProperties: {
+            include: {
+              Loans: true,
+              Disbursement: true,
+              ChatList: true,
+            },
+          },
         },
       });
 
