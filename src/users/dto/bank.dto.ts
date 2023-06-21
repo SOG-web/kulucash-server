@@ -1,3 +1,5 @@
+import { IsNotEmpty, IsString } from 'class-validator';
+
 /**
  * Copyright 2023 ROU Technology
  *
@@ -13,31 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-
-export class RequestLoanUserDto {
-  @IsNumber()
+export class createBankAccountDto {
+  @IsString()
   @IsNotEmpty()
-  amount: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  duration: number;
+  bank_name: string;
 
   @IsString()
   @IsNotEmpty()
-  purpose: string;
+  bank_code: string;
 
   @IsString()
   @IsNotEmpty()
-  bankId: string;
+  account_number: string;
 
   @IsString()
   @IsNotEmpty()
-  cardId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  interestId: string;
+  account_name: string;
 }

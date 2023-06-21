@@ -6,6 +6,7 @@ import {
   Post,
   UseInterceptors,
   Res,
+  Body,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
@@ -15,7 +16,11 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { BankListResponse, bankListResponse } from './objects/bank';
+import {
+  BankListResponse,
+  bankListResponse,
+  createBankAccount,
+} from './objects/bank';
 import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -23,6 +28,8 @@ import { RolesGuard } from 'src/auth/guard/role.guard';
 import { CompleteProfileUserDto } from './dto/update_profile_user.dto';
 import { CompleteUserProfileStrategy } from 'src/cloudinary/utils/file.strategy';
 import { UsersService2 } from './users.2.service';
+import { RequestLoanUserDto } from './dto/loan_user.dto';
+import { createBankAccountDto } from './dto/bank.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -67,6 +74,14 @@ export class UsersController {
     return this.userService.getBankAccounts(id);
   }
 
+  @Get('get-user-cards')
+  @ApiOperation({ summary: 'Get Card list' })
+  getCards(@Req() req: Request) {
+    const id = req.user['id'];
+
+    return this.userService2.getCardList(id);
+  }
+
   @Get('bank-list')
   @ApiOperation({ summary: 'Get Bank List' })
   @ApiResponse({
@@ -80,5 +95,39 @@ export class UsersController {
   })
   getBankList(): Promise<BankListResponse> {
     return this.userService.getBankList();
+  }
+
+  @Post('request-loan')
+  @ApiOperation({ summary: 'Submit loan request' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        amount: 1000,
+        duration: 31,
+        purpose: 'dgdg',
+        bankId: 'sijd',
+        cardId: 'fjdd',
+        interestId: 'djbjdk',
+      },
+    },
+  })
+  requestLoan(@Req() req: Request, @Body() dto: RequestLoanUserDto) {
+    const id = req.user['id'];
+    return this.userService2.requestLoan(id, req, dto);
+  }
+
+  @Post('create-bank-account')
+  @ApiOperation({ summary: 'Creating a new bank account' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: createBankAccount,
+    },
+  })
+  createBankAccount(@Req() req: Request, @Body() dto: createBankAccountDto) {
+    const id = req.user['id'];
+
+    return this.userService.createBankAccount(id, dto);
   }
 }

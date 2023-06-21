@@ -17,12 +17,13 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
-import { UploadApiResponse } from 'cloudinary';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SmsService } from 'src/sms/sms.service';
 import { CompleteProfileUserDto } from './dto/update_profile_user.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { RequestLoanUserDto } from './dto/loan_user.dto';
+import { LoanStatus } from '@prisma/client';
 
 @Injectable()
 export class UsersService2 {
@@ -150,6 +151,88 @@ export class UsersService2 {
       throw new ForbiddenException({
         status: false,
         message: 'there was an error',
+        error,
+      });
+    }
+  }
+
+  async requestLoan(id: string, req: Request, dto: RequestLoanUserDto) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          UserProperties: true,
+        },
+      });
+
+      const loan = await this.prisma.loans.create({
+        data: {
+          amount: dto.amount,
+          amount_requested: dto.amount,
+          status: LoanStatus.PENDING,
+          purpose: dto.purpose,
+          overDueFee: 0,
+          overDueDays: 0,
+          interest: {
+            connect: {
+              id: dto.interestId,
+            },
+          },
+          Bank: {
+            connect: {
+              id: dto.bankId,
+            },
+          },
+          Card: {
+            connect: {
+              id: dto.cardId,
+            },
+          },
+          loan_request_status: LoanStatus.PENDING,
+          duration: dto.duration,
+          UserProperties: {
+            connect: {
+              id: user.UserProperties.id,
+            },
+          },
+        },
+      });
+
+      return {
+        status: true,
+        data: 'Successful',
+        message: 'Loan Requested Successful',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: false,
+        error: error,
+        message: 'Error requesting Loan',
+      });
+    }
+  }
+
+  async createCard(userId: string, data: any) {}
+
+  async getCardList(userId: string) {
+    try {
+      const cards = await this.prisma.cardDetail.findMany({
+        where: {
+          userId: userId,
+        },
+      });
+
+      return {
+        status: true,
+        data: cards,
+        message: 'Card fetched Successfully',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: false,
+        message: 'Error getting card list',
         error,
       });
     }

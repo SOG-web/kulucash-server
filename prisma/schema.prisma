@@ -155,24 +155,24 @@ model UserProperties {
   user                     User                   @relation(fields: [userId], references: [id])
   userId                   String                 @unique
   telemarketer_call_status CallStatus             @default(NOTCALLED)
-  telemarketer_handler_id  String
-  telemarketer_call_count  Int
+  telemarketer_handler_id  String?
+  telemarketer_call_count  Int?
   telemarketer_call_time   String?
   telemarketer_status      TeleMarketerUserStatus @default(ACTIVE)
 
   verificator_call_status CallStatus
-  verificator_call_count  Int
-  verificator_handler_id  String
+  verificator_call_count  Int?
+  verificator_handler_id  String?
   verificator_call_time   String?
 
   collector_call_status CallStatus
-  collector_call_count  Int
-  collector_handler_id  String
+  collector_call_count  Int?
+  collector_handler_id  String?
   collector_call_time   String?
 
-  customer_service_call_count  Int
+  customer_service_call_count  Int?
   customer_service_call_status CallStatus
-  customer_service_handler_id  String
+  customer_service_handler_id  String?
 
   Loans         Loans[]
   Comment       Comment[]
@@ -229,22 +229,25 @@ model BvnData {
 }
 
 model BankDetail {
-  id             String @id @default(uuid())
+  id             String  @id @default(uuid())
   bank_name      String
+  bank_code      String
   account_number String
   account_name   String
-  user           User   @relation(fields: [userId], references: [id])
+  user           User    @relation(fields: [userId], references: [id])
   userId         String
+  Loans          Loans[]
 }
 
 model CardDetail {
-  id         String @id @default(uuid())
+  id         String  @id @default(uuid())
   email      String
   card_no    String
   cart_token String
   card_name  String
-  user       User   @relation(fields: [userId], references: [id])
+  user       User    @relation(fields: [userId], references: [id])
   userId     String
+  Loans      Loans[]
 }
 
 model EmergencyContact {
@@ -282,12 +285,12 @@ model Loans {
   duration            Int
   loan_request_status LoanStatus
   amount_requested    Float
-  amount_disbursed    Float
+  amount_disbursed    Float?
   disbursementStatus  DisbursementStatus @default(NOTDISBURSED)
-  amount_owed         Float
-  amount_paid         Float
-  loan_date           DateTime
-  loan_due_date       DateTime
+  amount_owed         Float?
+  amount_paid         Float?
+  loan_date           DateTime?
+  loan_due_date       DateTime?
   paid_at             DateTime?
   paid                Boolean            @default(false)
   repayment_frequency String?
@@ -303,6 +306,10 @@ model Loans {
   LoanRepayment       LoanRepayment[]
   UserProperties      UserProperties     @relation(fields: [userPropertiesId], references: [id])
   userPropertiesId    String
+  Bank                BankDetail         @relation(fields: [bankId], references: [id])
+  bankId              String
+  Card                CardDetail         @relation(fields: [cardId], references: [id])
+  cardId              String
 }
 
 model LoanRepayment {
