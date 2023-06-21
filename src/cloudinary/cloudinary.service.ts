@@ -6,6 +6,7 @@ import {
   v2,
 } from 'cloudinary';
 import * as fs from 'fs';
+
 @Injectable()
 export class CloudinaryService {
   async uploadImage(
