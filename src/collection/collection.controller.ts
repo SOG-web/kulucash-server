@@ -53,12 +53,13 @@ export class CollectionController {
     },
   })
   async assignClient(
-    @Body() data: { handler_id: string; userIds: string[] },
+    @Body() data: { handler_id: string; userIds: string[]; due_date: string },
   ): Promise<any> {
     const { handler_id } = data;
     this.commonService.assignClient(data.userIds, {
       collector_handler_id: handler_id,
       collector_call_status: CallStatus.NOTCALLED,
+      collector_due_date: data.due_date,
     });
   }
 

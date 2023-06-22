@@ -54,12 +54,13 @@ export class VerificationController {
     },
   })
   async assignClient(
-    @Body() data: { handler_id: string; userIds: string[] },
+    @Body() data: { handler_id: string; userIds: string[]; due_date: string },
   ): Promise<any> {
     const { handler_id } = data;
     this.commonService.assignClient(data.userIds, {
       verificator_handler_id: handler_id,
       verificator_call_status: CallStatus.NOTCALLED,
+      verificator_due_date: data.due_date,
     });
   }
 

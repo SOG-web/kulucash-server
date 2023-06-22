@@ -159,20 +159,25 @@ model UserProperties {
   telemarketer_call_count  Int?
   telemarketer_call_time   String?
   telemarketer_status      TeleMarketerUserStatus @default(ACTIVE)
+  telemarketer_due_date    String?
 
   verificator_call_status CallStatus
   verificator_call_count  Int?
   verificator_handler_id  String?
   verificator_call_time   String?
+  verificator_due_date    String?
 
   collector_call_status CallStatus
   collector_call_count  Int?
   collector_handler_id  String?
   collector_call_time   String?
+  collector_due_date    String?
 
   customer_service_call_count  Int?
   customer_service_call_status CallStatus
   customer_service_handler_id  String?
+  customer_service_call_time   String?
+  customer_service_due_date    String?
 
   Loans         Loans[]
   Comment       Comment[]
