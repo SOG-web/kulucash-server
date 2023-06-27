@@ -109,7 +109,7 @@ export class TelemarketingController {
       telemarketer_call_status: status,
       telemarketer_call_time: new Date(),
       telemarketer_call_count: {
-        increment: 1,
+        increment: status === CallStatus.CALLED ? 1 : 0,
       },
     });
   }

@@ -108,7 +108,7 @@ export class CollectionController {
       collector_call_status: status,
       collector_call_time: new Date(),
       collector_call_count: {
-        increment: 1,
+        increment: status === CallStatus.CALLED ? 1 : 0,
       },
     });
   }
