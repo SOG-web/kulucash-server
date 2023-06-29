@@ -22,7 +22,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('kulucash')
     .addBearerAuth()
-    .addServer('http://130.61.105.134:3000')
+    .addServer('https://api.kulu.ng')
     .addServer('http://localhost:3005')
     .build();
 
