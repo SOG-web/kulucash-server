@@ -116,22 +116,28 @@ export class VerificationService {
   async getClients(role: string, userId: string): Promise<any> {
     try {
       if (role === Role.TEAMLEADER) {
-        const users = await this.prisma.userProperties.findMany({
+        const users = await this.prisma.user.findMany({
           where: {
-            Loans: {
-              every: {
-                loan_request_status: {
-                  notIn: [
-                    LoanStatus.DISBURSED,
-                    LoanStatus.PARTIALLY_PAID,
-                    LoanStatus.PAID,
-                  ],
+            UserProperties: {
+              Loans: {
+                every: {
+                  loan_request_status: {
+                    notIn: [
+                      LoanStatus.DISBURSED,
+                      LoanStatus.PARTIALLY_PAID,
+                      LoanStatus.PAID,
+                    ],
+                  },
                 },
               },
             },
           },
           include: {
-            user: true,
+            UserProperties: {
+              include: {
+                Loans: true,
+              },
+            },
             Comment: {
               include: {
                 staff: true,
@@ -140,7 +146,6 @@ export class VerificationService {
                 department: Department.VERIFICATOR,
               },
             },
-            Loans: true,
           },
         });
         return {
@@ -150,18 +155,20 @@ export class VerificationService {
         };
       }
 
-      const users = await this.prisma.userProperties.findMany({
+      const users = await this.prisma.user.findMany({
         where: {
-          verificator_handler_id: userId,
-          AND: {
-            Loans: {
-              every: {
-                loan_request_status: {
-                  notIn: [
-                    LoanStatus.DISBURSED,
-                    LoanStatus.PARTIALLY_PAID,
-                    LoanStatus.PAID,
-                  ],
+          UserProperties: {
+            verificator_handler_id: userId,
+            AND: {
+              Loans: {
+                every: {
+                  loan_request_status: {
+                    notIn: [
+                      LoanStatus.DISBURSED,
+                      LoanStatus.PARTIALLY_PAID,
+                      LoanStatus.PAID,
+                    ],
+                  },
                 },
               },
             },
@@ -176,8 +183,11 @@ export class VerificationService {
               department: Department.VERIFICATOR,
             },
           },
-          Loans: true,
-          user: true,
+          UserProperties: {
+            include: {
+              Loans: true,
+            },
+          },
         },
       });
 

@@ -113,14 +113,22 @@ export class CollectionService {
   async getClients(role: Role, userId: string): Promise<any> {
     try {
       if (role === Role.TEAMLEADER) {
-        const clients = await this.prisma.userProperties.findMany({
+        const clients = await this.prisma.user.findMany({
           where: {
-            Loans: {
-              every: { paid: false },
+            UserProperties: {
+              Loans: {
+                every: { paid: false },
+              },
             },
           },
           include: {
-            user: true,
+            UserProperties: {
+              include: {
+                Loans: true,
+                Comment: true,
+                Disbursement: true,
+              },
+            },
           },
         });
 
@@ -131,15 +139,25 @@ export class CollectionService {
         };
       }
 
-      const clients = await this.prisma.userProperties.findMany({
+      const clients = await this.prisma.user.findMany({
         where: {
-          collector_handler_id: userId,
-          Loans: {
-            every: { paid: false },
+          UserProperties: {
+            Loans: {
+              every: { paid: false },
+            },
+            AND: {
+              collector_handler_id: userId,
+            },
           },
         },
         include: {
-          user: true,
+          UserProperties: {
+            include: {
+              Loans: true,
+              Comment: true,
+              Disbursement: true,
+            },
+          },
         },
       });
 

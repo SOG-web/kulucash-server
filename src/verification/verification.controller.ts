@@ -109,7 +109,7 @@ export class VerificationController {
       verificator_call_status: status,
       verificator_call_time: new Date(),
       verificator_call_count: {
-        increment: 1,
+        increment: status === CallStatus.CALLED ? 1 : 0,
       },
     });
   }
