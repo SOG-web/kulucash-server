@@ -18,6 +18,7 @@ import { DojahModule } from './dojah/dojah.module';
 import { CommonService } from './common/common.service';
 import { CronsModule } from './crons/crons.module';
 import { CronsService } from './crons/crons.service';
+import { MonnifyModule } from './monnify/monnify.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CronsService } from './crons/crons.service';
       isGlobal: true,
     }),
     CronsModule,
+    MonnifyModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, CommonService],
