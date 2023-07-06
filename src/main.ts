@@ -23,7 +23,7 @@ async function bootstrap() {
     .addTag('kulucash')
     .addBearerAuth()
     .addServer('https://api.kulu.ng')
-    .addServer('http://localhost:3005')
+    .addServer('http://localhost:3000')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
