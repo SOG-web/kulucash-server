@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { CallStatus, Role } from '@prisma/client';
+import { CallStatus, Department, Role } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -177,7 +177,11 @@ export class CollectionService {
 
   async getStaffList(): Promise<any> {
     try {
-      const staffList = await this.prisma.staff.findMany();
+      const staffList = await this.prisma.staff.findMany(
+        where: {
+          department: Department.COLLECTOR
+        }
+      );
 
       const staffListUpdated = staffList.map(async (staff) => {
         const totalAssignedCases = await this.prisma.userProperties.count({
