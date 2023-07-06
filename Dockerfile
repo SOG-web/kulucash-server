@@ -8,9 +8,14 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=${PUPPETEER_SKIP_CHROMIUM_DOWNLOAD}
 RUN apt-get update
 RUN apt-get install -y openssl
 
+# install python3
+RUN apt-get install -y python3 python3-pip
+
 WORKDIR /usr/src/app
 
 COPY ./package.json ./package-lock.json ./tsconfig.json ./tsconfig.build.json ./nest-cli.json ./
+
+RUN npm install -g node-gyp
 
 RUN npm install --legacy-peer-deps
 
