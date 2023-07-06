@@ -9,16 +9,16 @@ export class CollectionService {
   async dashboard(role: Role, userId: string) {
     try {
       if (role === Role.TEAMLEADER) {
-        const totalAmountCollected = this.prisma.loanRepayment.aggregate({
+        const totalAmountCollected =  await this.prisma.loanRepayment.aggregate({
           _sum: { amount: true },
         });
 
-        const totalAmountOwed = this.prisma.loans.aggregate({
+        const totalAmountOwed = await this.prisma.loans.aggregate({
           where: { paid: false },
           _sum: { amount_owed: true },
         });
 
-        const totalAssignedCases = this.prisma.userProperties.count({
+        const totalAssignedCases = await this.prisma.userProperties.count({
           where: {
             NOT: { collector_handler_id: null },
             AND: {
@@ -29,11 +29,11 @@ export class CollectionService {
           },
         });
 
-        const totalCases = this.prisma.loans.count({
+        const totalCases = await this.prisma.loans.count({
           where: { paid: false },
         });
 
-        const recentCalled = this.prisma.userProperties.findMany({
+        const recentCalled = await this.prisma.userProperties.findMany({
           where: { collector_call_status: CallStatus.CALLED },
           take: 10,
           orderBy: { collector_call_time: 'desc' },
@@ -52,12 +52,12 @@ export class CollectionService {
         };
       }
 
-      const totalAmountCollected = this.prisma.loanRepayment.aggregate({
+      const totalAmountCollected = await this.prisma.loanRepayment.aggregate({
         where: { handler_id: userId },
         _sum: { amount: true },
       });
 
-      const totalAmountOwed = this.prisma.userProperties.aggregate({
+      const totalAmountOwed = await this.prisma.userProperties.aggregate({
         where: {
           collector_handler_id: userId,
           AND: {
@@ -68,13 +68,13 @@ export class CollectionService {
         },
       });
 
-      const totalAssignedCases = this.prisma.userProperties.count({
+      const totalAssignedCases = await this.prisma.userProperties.count({
         where: {
           collector_handler_id: userId,
         },
       });
 
-      const totalClosedCases = this.prisma.userProperties.count({
+      const totalClosedCases = await this.prisma.userProperties.count({
         where: {
           collector_handler_id: userId,
           Loans: {
@@ -83,7 +83,7 @@ export class CollectionService {
         },
       });
 
-      const recentCalled = this.prisma.userProperties.findMany({
+      const recentCalled = await this.prisma.userProperties.findMany({
         where: {
           collector_handler_id: userId,
           collector_call_status: CallStatus.CALLED,
