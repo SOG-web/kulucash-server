@@ -177,11 +177,11 @@ export class CollectionService {
 
   async getStaffList(): Promise<any> {
     try {
-      const staffList = await this.prisma.staff.findMany(
+      const staffList = await this.prisma.staff.findMany({
         where: {
           department: Department.COLLECTOR
         }
-      );
+    });
 
       const staffListUpdated = staffList.map(async (staff) => {
         const totalAssignedCases = await this.prisma.userProperties.count({
