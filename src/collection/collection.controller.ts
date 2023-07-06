@@ -1,17 +1,18 @@
-import { Controller, UseGuards, Get, Req, Body, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { CallStatus, Department, Role } from '@prisma/client';
 import { Request } from 'express';
 import { DepartmentRole } from 'src/auth/decorators/department.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { DepartmentGuard } from 'src/auth/guard/department.guard';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { CommonService } from 'src/common/common.service';
 import { CollectionService } from './collection.service';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
-import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('collection')
 @UseGuards(JwtAuthGuard, DepartmentGuard)
 @DepartmentRole(Department.COLLECTOR)
+@ApiBearerAuth()
 export class CollectionController {
   constructor(
     private collectionService: CollectionService,
