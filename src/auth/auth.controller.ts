@@ -193,7 +193,7 @@ export class AuthController {
       },
     },
   })
-  sendOtp(@Body() phone_number: string): Promise<any> {
+  sendOtp(@Body('phone_number') phone_number: string): Promise<any> {
     return this.usersService.sendOtp(phone_number);
   }
 

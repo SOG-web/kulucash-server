@@ -9,7 +9,7 @@ export class CollectionService {
   async dashboard(role: Role, userId: string) {
     try {
       if (role === Role.TEAMLEADER) {
-        const totalAmountCollected =  await this.prisma.loanRepayment.aggregate({
+        const totalAmountCollected = await this.prisma.loanRepayment.aggregate({
           _sum: { amount: true },
         });
 
@@ -77,8 +77,10 @@ export class CollectionService {
       const totalClosedCases = await this.prisma.userProperties.count({
         where: {
           collector_handler_id: userId,
-          Loans: {
-            every: { paid: true },
+          AND: {
+            Loans: {
+              every: { paid: true },
+            },
           },
         },
       });
@@ -179,9 +181,9 @@ export class CollectionService {
     try {
       const staffList = await this.prisma.staff.findMany({
         where: {
-          department: Department.COLLECTOR
-        }
-    });
+          department: Department.COLLECTOR,
+        },
+      });
 
       const staffListUpdated = staffList.map(async (staff) => {
         const totalAssignedCases = await this.prisma.userProperties.count({
