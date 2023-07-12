@@ -168,9 +168,9 @@ export class MonnifyService {
   }
 
   async bvnAccountVerification(
-    bvn: string,
     accountNumber: string,
     bankCode: string,
+    bvn: string,
   ) {
     try {
       // check if the token is still valid
