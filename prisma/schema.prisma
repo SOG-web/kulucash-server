@@ -75,6 +75,23 @@ enum DisbursementStatus {
   NOTDISBURSED
 }
 
+enum InterestStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TransactionType {
+  CARDLINK
+  AUTODEBIT
+}
+
+enum MonnifyPaymentStatus {
+  PAID
+  FAILED
+  PENDING
+  EXPIRED
+}
+
 model Admin {
   id           String   @id @unique @default(nanoid(5))
   created_at   DateTime @default(now())
@@ -184,6 +201,7 @@ model UserProperties {
   ChatList      ChatList[]
   ResolvedIssue ResolvedIssue[]
   Disbursement  Disbursement[]
+  Transactions  Transactions[]
 }
 
 model Comment {
@@ -227,6 +245,7 @@ model BvnData {
   state_of_residence  String
   title               String
   watch_listed        String
+  reference           String?
   user                User     @relation(fields: [userId], references: [id])
   userId              String   @unique
   created_at          DateTime @default(now())
@@ -246,10 +265,10 @@ model BankDetail {
 
 model CardDetail {
   id         String  @id @default(uuid())
-  email      String
   card_no    String
-  cart_token String
+  card_token String
   card_name  String
+  email      String
   user       User    @relation(fields: [userId], references: [id])
   userId     String
   Loans      Loans[]
@@ -329,14 +348,15 @@ model LoanRepayment {
 }
 
 model Interest {
-  id             String   @id @unique @default(uuid())
+  id             String         @id @unique @default(uuid())
   name           String
   vat            Float
   service_charge Float
   interest_rate  Float
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
   Loans          Loans[]
+  status         InterestStatus @default(ACTIVE)
 }
 
 model Disbursement {
@@ -382,4 +402,16 @@ model ResolvedIssue {
   updated_at       DateTime       @updatedAt
   UserProperties   UserProperties @relation(fields: [userPropertiesId], references: [id])
   userPropertiesId String
+}
+
+model Transactions {
+  id               String               @id @unique @default(uuid())
+  amount           Float
+  transaction_type TransactionType
+  created_at       DateTime             @default(now())
+  updated_at       DateTime             @updatedAt
+  UserProperties   UserProperties       @relation(fields: [userPropertiesId], references: [id])
+  userPropertiesId String
+  reference        String
+  payment_status   MonnifyPaymentStatus @default(PENDING)
 }

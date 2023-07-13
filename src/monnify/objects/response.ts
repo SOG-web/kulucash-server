@@ -1687,3 +1687,50 @@ export const monnifyVerifyBankAccountResponse = {
     bankCode: '044',
   },
 };
+
+export const verifyPaymentResponse = {
+  requestSuccessful: true,
+  responseMessage: 'success',
+  responseCode: '0',
+  responseBody: {
+    transactionReference: 'MNFY|85|20220121154916|000006',
+    paymentReference: '1642776556694',
+    amountPaid: '30.00',
+    totalPayable: '30.00',
+    settlementAmount: '20.00',
+    paidOn: '21/01/2022 03:49:28 PM',
+    paymentStatus: 'PAID',
+    paymentDescription: 'Paying for Product A',
+    currency: 'NGN',
+    paymentMethod: 'CARD',
+    product: {
+      type: 'WEB_SDK',
+      reference: '1642776556694',
+    },
+    cardDetails: {
+      cardType: 'MC Scheme',
+      last4: '1608',
+      expMonth: '08',
+      expYear: '24',
+      bin: '469667',
+      bankCode: '044',
+      bankName: 'Access bank',
+      reusable: true,
+      countryCode: null,
+      cardToken: 'MNFY_8BA4740A8ED449E7BE404335977193AC',
+      supportsTokenization: true,
+    },
+    accountDetails: null,
+    accountPayments: [],
+    customer: {
+      email: 'smekiluwa@teamapt.com',
+      name: 'Smart Mekiliuwa',
+    },
+    metaData: {
+      deviceType: 'mobile',
+      ipAddress: '127.0.0.1',
+    },
+  },
+};
+
+export type verifyPaymentResponseType = typeof verifyPaymentResponse;

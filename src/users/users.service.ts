@@ -82,6 +82,7 @@ export class UsersService {
         token: token,
       };
     } catch (error) {
+      console.log(error);
       try {
         await this.prisma.user.delete({
           where: {

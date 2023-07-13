@@ -1,5 +1,12 @@
-import { Role } from '@prisma/client';
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { InterestStatus, Role } from '@prisma/client';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateAdminDto {
   @IsString()
@@ -35,4 +42,32 @@ export class LoginAdminDto {
   @IsString()
   @IsNotEmpty()
   password: string;
+}
+
+export class CreateInterestDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  vat: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  interest_rate: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  service_charge: number;
+}
+
+export class UpdateInterestDto extends CreateInterestDto {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsBoolean()
+  @IsEnum(InterestStatus)
+  status: InterestStatus;
 }

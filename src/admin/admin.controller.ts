@@ -7,6 +7,8 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guard/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
+import { createInterestObj, updateInterestObj } from './objects/admin';
+import { CreateInterestDto, UpdateInterestDto } from './dto/admin.dto';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -147,5 +149,63 @@ export class AdminController {
   @ApiOperation({ summary: 'Get Dashboard Details' })
   getDashboard(): Promise<any> {
     return this.adminService.getDashboard();
+  }
+
+  @Post('create-interest')
+  @ApiOperation({ summary: 'Create new Intrest' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: createInterestObj,
+    },
+  })
+  createInterest(@Body() interest: CreateInterestDto): Promise<any> {
+    return this.adminService.createInterest(interest);
+  }
+
+  @Get('get-interests')
+  @ApiOperation({ summary: 'Get Intrest' })
+  getIntrest(): Promise<any> {
+    return this.adminService.getInterests();
+  }
+
+  @Post('delete-interest')
+  @ApiOperation({ summary: 'Delete Intrest' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        id: 'id',
+      },
+    },
+  })
+  deleteIntrest(@Body() interest: { id: string }): Promise<any> {
+    return this.adminService.deleteInterest(interest.id);
+  }
+
+  @Post('update-interest')
+  @ApiOperation({ summary: 'Update Intrest' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: updateInterestObj,
+    },
+  })
+  updateIntrest(@Body() interest: UpdateInterestDto): Promise<any> {
+    return this.adminService.editInterest(interest);
+  }
+
+  @Post('delete-interests')
+  @ApiOperation({ summary: 'Delete Intrests' })
+  @ApiBody({
+    required: true,
+    schema: {
+      example: {
+        ids: ['id1', 'id2'],
+      },
+    },
+  })
+  deleteIntrests(@Body() interests: { ids: string[] }): Promise<any> {
+    return this.adminService.deleteManyInterests(interests.ids);
   }
 }

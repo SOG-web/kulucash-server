@@ -23,7 +23,7 @@ import { SmsService } from 'src/sms/sms.service';
 import { CompleteProfileUserDto } from './dto/update_profile_user.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { RequestLoanUserDto } from './dto/loan_user.dto';
-import { LoanStatus } from '@prisma/client';
+import { InterestStatus, LoanStatus } from '@prisma/client';
 
 @Injectable()
 export class UsersService2 {
@@ -233,6 +233,28 @@ export class UsersService2 {
       throw new ForbiddenException({
         status: false,
         message: 'Error getting card list',
+        error,
+      });
+    }
+  }
+
+  async getInterest() {
+    try {
+      const interest = await this.prisma.interest.findFirst({
+        where: {
+          status: InterestStatus.ACTIVE,
+        },
+      });
+
+      return {
+        status: true,
+        data: interest,
+        message: 'Interest fetched Successfully',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: false,
+        message: 'Error getting interest',
         error,
       });
     }

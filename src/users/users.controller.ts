@@ -130,4 +130,10 @@ export class UsersController {
 
     return this.userService.createBankAccount(id, dto);
   }
+
+  @Get('get-interest')
+  @ApiOperation({ summary: 'Get Interest' })
+  getInterest() {
+    return this.userService2.getInterest();
+  }
 }

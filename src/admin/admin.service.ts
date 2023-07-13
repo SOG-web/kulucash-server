@@ -2,10 +2,15 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { LoanStatus, Role } from '@prisma/client';
+import { InterestStatus, LoanStatus, Role } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateAdminDto, LoginAdminDto } from './dto/admin.dto';
+import {
+  CreateAdminDto,
+  CreateInterestDto,
+  LoginAdminDto,
+  UpdateInterestDto,
+} from './dto/admin.dto';
 import { CreateStaffDto, UpdateStaffDto } from './dto/staff.dto';
 import { SmsService } from 'src/sms/sms.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -337,6 +342,132 @@ export class AdminService {
         status: false,
         message: 'Error Ocurred',
         data: error,
+      });
+    }
+  }
+
+  async createInterest(data: CreateInterestDto) {
+    try {
+      // change all existing interest status to INACTIVE
+      await this.prisma.interest.updateMany({
+        data: {
+          status: InterestStatus.INACTIVE,
+        },
+      });
+
+      const interest = await this.prisma.interest.create({
+        data: {
+          ...data,
+        },
+      });
+
+      return {
+        status: true,
+        data: interest,
+        message: 'Interest Created Successfully',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: false,
+        message: 'Error Ocurred',
+        data: error,
+      });
+    }
+  }
+
+  async getInterests() {
+    try {
+      const interest = await this.prisma.interest.findMany({});
+
+      return {
+        status: true,
+        data: interest,
+        message: 'Successful',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: false,
+        data: error,
+        message: 'Error getting Interests',
+      });
+    }
+  }
+
+  async editInterest(data: UpdateInterestDto) {
+    try {
+      // change all existing interest status to INACTIVE if data.status is ACTIVE
+
+      if (data.status === InterestStatus.ACTIVE) {
+        await this.prisma.interest.updateMany({
+          data: {
+            status: InterestStatus.INACTIVE,
+          },
+        });
+      }
+
+      const interest = await this.prisma.interest.update({
+        data,
+        where: {
+          id: data.id,
+        },
+      });
+
+      return {
+        status: true,
+        data: interest,
+        message: 'Successful',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: true,
+        data: error,
+        message: 'Error Occured',
+      });
+    }
+  }
+
+  async deleteInterest(id: string) {
+    try {
+      const interest = await this.prisma.interest.delete({
+        where: {
+          id,
+        },
+      });
+
+      return {
+        status: true,
+        data: interest,
+        message: 'Successful',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: true,
+        data: error,
+        message: 'Error Occured',
+      });
+    }
+  }
+
+  async deleteManyInterests(ids: string[]) {
+    try {
+      const interest = await this.prisma.interest.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+
+      return {
+        status: true,
+        data: interest,
+        message: 'Successful',
+      };
+    } catch (error) {
+      throw new ForbiddenException({
+        status: true,
+        data: error,
+        message: 'Error Occured',
       });
     }
   }
